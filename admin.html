@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f3f5ff">
+<title>Teacher Admin</title>
+<style>
+:root{--ink:#232b45;--muted:#69738b;--blue:#5268d7;--line:#e4e8f2}
+*{box-sizing:border-box}body{margin:0;padding:16px;background:linear-gradient(145deg,#eff2ff,#eff8f1);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+button,input,textarea,select{font:inherit}button{cursor:pointer}.app{width:min(1100px,100%);margin:auto}
+header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:15px}
+h1{font-size:clamp(1.25rem,4vw,1.8rem);margin:0}.muted{color:var(--muted);line-height:1.5}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:19px;box-shadow:0 10px 30px #24315b12}
+h2{margin:0 0 12px;font-size:1.2rem}.field{margin:11px 0}.field label{display:block;font-weight:750;margin-bottom:5px}
+input,textarea,select{width:100%;padding:9px 11px;border:1px solid #d8deea;border-radius:10px;background:#fff;color:var(--ink)}
+textarea{min-height:110px;font-family:ui-monospace,monospace;font-size:.88rem}
+button{min-height:40px;border:0;border-radius:10px;padding:9px 12px;font-weight:800}
+.primary{background:var(--blue);color:white}.secondary{background:#edf0f7;color:var(--ink)}.danger{background:#fff0f2;color:#9f3040}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.classrow,.question{border:1px solid var(--line);border-radius:12px;padding:12px;margin:9px 0;background:#fcfcff}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:8px}.notice{padding:12px;background:#fff8e3;border-radius:11px;margin-bottom:14px;line-height:1.5}
+.hidden{display:none!important}
+@media(max-width:750px){.grid{grid-template-columns:1fr}}
+@media(max-width:480px){body{padding:10px}.two{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<main class="app">
+<header><h1 id="title"></h1><a href="./index.html" id="studentLink"></a></header>
+<div class="notice" id="notice"></div>
+
+<div class="grid">
+<section class="card">
+  <h2 id="classHeading"></h2>
+  <div class="field"><label id="difficultyLabel" for="difficulty"></label>
+    <select id="difficulty">
+      <option value="Easy">Easy</option><option value="Medium">Medium</option><option value="Hard">Hard</option>
+    </select>
+  </div>
+  <h2 id="newClassHeading"></h2>
+  <p class="muted" id="classHelp"></p>
+  <div class="two">
+    <div class="field"><label>Polski</label><input id="classPl"></div>
+    <div class="field"><label>English</label><input id="classEn"></div>
+  </div>
+  <div class="field"><label>日本語</label><input id="classJa"></div>
+  <button class="primary" id="addClass"></button>
+  <div id="classList"></div>
+</section>
+
+<section class="card">
+  <h2 id="questionsHeading"></h2>
+  <p class="muted" id="questionHelp"></p>
+  <div class="field"><label id="questionIdLabel" for="questionId"></label><input id="questionId" placeholder="new-question-id"></div>
+  <div class="field"><label id="questionJsonLabel" for="questionJson"></label>
+    <textarea id="questionJson" spellcheck="false"></textarea></div>
+  <div class="row">
+    <button class="primary" id="saveQuestion"></button>
+    <button class="secondary" id="clearQuestion"></button>
+  </div>
+  <div id="questionList"></div>
+</section>
+</div>
+
+<section class="card" style="margin-top:15px">
+  <h2 id="exportHeading"></h2>
+  <p class="muted" id="exportHelp"></p>
+  <div class="row"><button class="primary" id="export"></button><button class="secondary" id="copy"></button></div>
+  <div class="field"><textarea id="exportText" spellcheck="false"></textarea></div>
+  <p class="muted" id="status"></p>
+</section>
+</main>
+
+<script>
+const LANG=(()=>{const s=(navigator.languages?.[0]||navigator.language||"en").toLowerCase();return s.startsWith("pl")?"pl":s.startsWith("ja")?"ja":"en"})();
+const T={
+en:{title:"Teacher administration",student:"Open student game",notice:"The source of truth is questions.json on GitHub. After editing, export the JSON, replace the repository file, and commit the change. GitHub Pages cannot save directly to the repository.",classes:"Classes and difficulty",difficulty:"Student difficulty",newClass:"Add a class",classHelp:"Enter the class name in all three languages.",addClass:"Add class",rename:"Save names",remove:"Delete class",questions:"Question editor",questionHelp:"Add or edit a complete question as JSON. It supports single, multiple, boolean, text, and word_order types. Use translations for pl, en, and ja.",id:"Question ID",json:"Question JSON",save:"Save / add question",clear:"Clear form",edit:"Edit",del:"Delete",export:"Export complete data",copy:"Copy JSON",exportTitle:"GitHub JSON export",exportHelp:"Copy this complete JSON into questions.json in your GitHub repository, then commit it.",saved:"Question updated in this page. Export and commit to save on GitHub.",added:"Question added in this page. Export and commit to save on GitHub.",classSaved:"Class changes are on this page. Export and commit to save on GitHub.",badJson:"Invalid JSON. Check syntax and required fields.",confirmClass:"Delete this class and all its questions?",chooseClass:"Choose a class"},
+pl:{title:"Panel administracyjny nauczyciela",student:"Otwórz grę ucznia",notice:"Źródłem danych jest questions.json na GitHubie. Po edycji wyeksportuj JSON, zastąp nim plik w repozytorium i zatwierdź zmianę. GitHub Pages nie może zapisywać bezpośrednio do repozytorium.",classes:"Klasy i trudność",difficulty:"Poziom trudności uczniów",newClass:"Dodaj klasę",classHelp:"Wpisz nazwę klasy w trzech językach.",addClass:"Dodaj klasę",rename:"Zapisz nazwy",remove:"Usuń klasę",questions:"Edytor pytań",questionHelp:"Dodaj lub edytuj całe pytanie jako JSON. Obsługiwane typy: single, multiple, boolean, text i word_order. Tekst wpisuj dla pl, en i ja.",id:"ID pytania",json:"JSON pytania",save:"Dodaj / zapisz pytanie",clear:"Wyczyść formularz",edit:"Edytuj",del:"Usuń",export:"Przygotuj pełny eksport",copy:"Kopiuj JSON",exportTitle:"Eksport do GitHuba",exportHelp:"Skopiuj cały JSON do questions.json w repozytorium GitHub, a potem zatwierdź zmianę.",saved:"Pytanie zmieniono na tej stronie. Wyeksportuj dane i zatwierdź je na GitHubie.",added:"Pytanie dodano na tej stronie. Wyeksportuj dane i zatwierdź je na GitHubie.",classSaved:"Zmiany klas są na tej stronie. Wyeksportuj dane i zatwierdź je na GitHubie.",badJson:"Nieprawidłowy JSON. Sprawdź składnię i wymagane pola.",confirmClass:"Usunąć tę klasę i wszystkie jej pytania?",chooseClass:"Wybierz klasę"},
+ja:{title:"先生用管理パネル",student:"生徒ゲームを開く",notice:"データの基準はGitHub上のquestions.jsonです。編集後にJSONをエクスポートし、リポジトリのファイルを置き換えて変更を確定してください。GitHub Pagesからリポジトリへ直接保存することはできません。",classes:"クラスと難易度",difficulty:"生徒の難易度",newClass:"クラスを追加",classHelp:"クラス名を3つの言語で入力してください。",addClass:"クラスを追加",rename:"名前を保存",remove:"クラスを削除",questions:"問題エディター",questionHelp:"問題全体をJSONで追加・編集します。single、multiple、boolean、text、word_orderに対応します。pl、en、jaの翻訳を入力してください。",id:"問題ID",json:"問題JSON",save:"問題を追加・保存",clear:"フォームをクリア",edit:"編集",del:"削除",export:"全データをエクスポート",copy:"JSONをコピー",exportTitle:"GitHub用JSON",exportHelp:"JSON全体をGitHubリポジトリのquestions.jsonに貼り付け、変更を確定してください。",saved:"このページで問題を更新しました。GitHubに保存するにはエクスポートして確定してください。",added:"このページで問題を追加しました。GitHubに保存するにはエクスポートして確定してください。",classSaved:"このページでクラスを変更しました。GitHubに保存するにはエクスポートして確定してください。",badJson:"JSONが正しくありません。構文と必須項目を確認してください。",confirmClass:"このクラスと関連するすべての問題を削除しますか？",chooseClass:"クラスを選択"}
+}[LANG];
+const $=id=>document.getElementById(id);
+let data={settings:{difficulty:"Easy"},classes:[],questions:[]},editingId=null;
+function tr(id){return T[id]||id}
+function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function setText(id,key){$(id).textContent=tr(key)}
+function initText(){
+ document.documentElement.lang=LANG;
+ [["title","title"],["studentLink","student"],["notice","notice"],["classHeading","classes"],["difficultyLabel","difficulty"],["newClassHeading","newClass"],["classHelp","classHelp"],["addClass","addClass"],["questionsHeading","questions"],["questionHelp","questionHelp"],["questionIdLabel","id"],["questionJsonLabel","json"],["saveQuestion","save"],["clearQuestion","clear"],["exportHeading","exportTitle"],["exportHelp","exportHelp"],["export","export"],["copy","copy"]].forEach(([id,k])=>setText(id,k));
+}
+async function load(){
+ initText();
+ try{
+  const u=new URL("./questions.json",location.href);u.searchParams.set("v",Date.now());
+  const r=await fetch(u,{cache:"no-store"});if(!r.ok)throw Error("HTTP "+r.status);
+  data=await r.json();
+  if(!Array.isArray(data.classes)||!Array.isArray(data.questions))throw Error("Invalid file");
+  $("difficulty").value=data.settings?.difficulty||"Easy";
+  renderClasses();renderQuestions();
+ }catch(e){$("status").textContent="Could not load questions.json: "+e.message}
+}
+$("difficulty").addEventListener("change",()=>{data.settings.difficulty=$("difficulty").value;$("status").textContent=tr("classSaved")});
+$("addClass").addEventListener("click",()=>{
+ const pl=$("classPl").value.trim(),en=$("classEn").value.trim(),ja=$("classJa").value.trim();
+ if(!pl||!en||!ja){alert("Enter the class name in all three languages.");return}
+ data.classes.push({id:"class-"+Date.now(),names:{pl,en,ja}});
+ $("classPl").value=$("classEn").value=$("classJa").value="";
+ renderClasses();renderQuestions();$("status").textContent=tr("classSaved");
+});
+function renderClasses(){
+ $("classList").innerHTML=data.classes.map(c=>`
+  <div class="classrow" data-class="${esc(c.id)}">
+   <div class="two">
+    <div class="field"><label>Polski</label><input data-lang="pl" value="${esc(c.names.pl)}"></div>
+    <div class="field"><label>English</label><input data-lang="en" value="${esc(c.names.en)}"></div>
+   </div>
+   <div class="field"><label>日本語</label><input data-lang="ja" value="${esc(c.names.ja)}"></div>
+   <div class="row"><button class="secondary rename">${tr("rename")}</button><button class="danger remove">${tr("remove")}</button></div>
+  </div>`).join("");
+ $("classList").querySelectorAll(".classrow").forEach(row=>{
+  const id=row.dataset.class;
+  row.querySelector(".rename").onclick=()=>{
+   const c=data.classes.find(x=>x.id===id);
+   c.names={pl:row.querySelector('[data-lang="pl"]').value.trim(),en:row.querySelector('[data-lang="en"]').value.trim(),ja:row.querySelector('[data-lang="ja"]').value.trim()};
+   renderClasses();$("status").textContent=tr("classSaved");
+  };
+  row.querySelector(".remove").onclick=()=>{
+   if(!confirm(tr("confirmClass")))return;
+   data.classes=data.classes.filter(x=>x.id!==id);
+   data.questions=data.questions.filter(q=>q.classId!==id);
+   renderClasses();renderQuestions();$("status").textContent=tr("classSaved");
+  };
+ });
+}
+$("saveQuestion").addEventListener("click",()=>{
+ try{
+  const q=JSON.parse($("questionJson").value);
+  if(!q.id||!q.classId||!q.type||!q.question)throw Error("Missing required fields");
+  if(!data.classes.some(c=>c.id===q.classId))throw Error("classId must match an existing class");
+  if(editingId){
+   const i=data.questions.findIndex(x=>x.id===editingId);
+   if(i<0)throw Error("Question not found");
+   data.questions[i]=q;$("status").textContent=tr("saved");
+  }else{
+   if(data.questions.some(x=>x.id===q.id))throw Error("This question ID already exists");
+   data.questions.push(q);$("status").textContent=tr("added");
+  }
+  editingId=null;$("questionId").value="";$("questionJson").value="";
+  renderQuestions();
+ }catch(e){alert(tr("badJson")+" "+e.message)}
+});
+$("clearQuestion").addEventListener("click",()=>{editingId=null;$("questionId").value="";$("questionJson").value=""});
+function renderQuestions(){
+ $("questionList").innerHTML=data.questions.map(q=>`
+  <div class="question">
+   <strong>${esc(q.id)}</strong> · ${esc(q.type)} · ${esc(q.classId)}
+   <p>${esc(q.question?.[LANG]||q.question?.en||q.question?.pl||"")}</p>
+   <div class="row">
+    <button class="secondary edit" data-id="${esc(q.id)}">${tr("edit")}</button>
+    <button class="danger delete" data-id="${esc(q.id)}">${tr("del")}</button>
+    <button class="secondary up" data-id="${esc(q.id)}">↑</button>
+    <button class="secondary down" data-id="${esc(q.id)}">↓</button>
+   </div>
+  </div>`).join("");
+ $("questionList").querySelectorAll("button").forEach(b=>b.onclick=()=>{
+  const i=data.questions.findIndex(q=>q.id===b.dataset.id);
+  if(b.classList.contains("edit")){
+   editingId=data.questions[i].id;$("questionId").value=editingId;
+   $("questionJson").value=JSON.stringify(data.questions[i],null,2);
+   $("questionJson").scrollIntoView({behavior:"smooth"});
+  }else if(b.classList.contains("delete")){
+   if(confirm("Delete this question?")){data.questions.splice(i,1);renderQuestions()}
+  }else if(b.classList.contains("up")&&i>0){
+   [data.questions[i-1],data.questions[i]]=[data.questions[i],data.questions[i-1]];renderQuestions()
+  }else if(b.classList.contains("down")&&i<data.questions.length-1){
+   [data.questions[i+1],data.questions[i]]=[data.questions[i],data.questions[i+1]];renderQuestions()
+  }
+ });
+}
+$("export").onclick=()=>{
+ $("exportText").value=JSON.stringify({settings:data.settings,classes:data.classes,questions:data.questions},null,2);
+ $("status").textContent=tr("exportHelp");
+};
+$("copy").onclick=async()=>{
+ const text=$("exportText").value||JSON.stringify({settings:data.settings,classes:data.classes,questions:data.questions},null,2);
+ $("exportText").value=text;
+ try{await navigator.clipboard.writeText(text);$("status").textContent=tr("exportHelp")}
+ catch{$("exportText").focus();$("exportText").select();document.execCommand("copy");$("status").textContent=tr("exportHelp")}
+};
+load();
+</script>
+</body>
+</html>
