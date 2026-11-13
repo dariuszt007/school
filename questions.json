@@ -1,0 +1,238 @@
+{
+  "settings": {
+    "difficulty": "Łatwy"
+  },
+  "questions": [
+    {
+      "id": "m1-mnozenie",
+      "type": "single",
+      "grade": "中1",
+      "subject": "Matematyka",
+      "topic": "Mnożenie",
+      "difficulty": "Łatwy",
+      "question": "Ile wynosi 7 × 8?",
+      "answers": ["54", "56", "64", "48"],
+      "correct": 1,
+      "explanation": "7 × 8 = 56."
+    },
+    {
+      "id": "m1-dzielenie",
+      "type": "text",
+      "grade": "中1",
+      "subject": "Matematyka",
+      "topic": "Dzielenie",
+      "difficulty": "Łatwy",
+      "question": "Oblicz 36 ÷ 4.",
+      "acceptedAnswers": ["9", "dziewięć"],
+      "explanation": "36 podzielone przez 4 to 9."
+    },
+    {
+      "id": "en1-zdanie",
+      "type": "word_order",
+      "grade": "中1",
+      "subject": "Angielski",
+      "topic": "Szyk zdania",
+      "difficulty": "Łatwy",
+      "question": "Ułóż zdanie po angielsku:",
+      "words": ["every", "I", "school", "go", "to", "day"],
+      "correctWords": ["I", "go", "to", "school", "every", "day"],
+      "explanation": "I go to school every day."
+    },
+    {
+      "id": "en1-library",
+      "type": "single",
+      "grade": "中1",
+      "subject": "Angielski",
+      "topic": "Słownictwo",
+      "difficulty": "Łatwy",
+      "question": "Które słowo oznacza „biblioteka”?",
+      "answers": ["Kitchen", "Library", "Garden", "Window"],
+      "correct": 1,
+      "explanation": "Library oznacza bibliotekę."
+    },
+    {
+      "id": "en1-be",
+      "type": "text",
+      "grade": "中1",
+      "subject": "Angielski",
+      "topic": "Czasownik be",
+      "difficulty": "Łatwy",
+      "question": "Uzupełnij zdanie: I ___ a student.",
+      "acceptedAnswers": ["am"],
+      "explanation": "Z zaimkiem I używamy formy am."
+    },
+    {
+      "id": "science1-plants",
+      "type": "boolean",
+      "grade": "中1",
+      "subject": "Nauki przyrodnicze",
+      "topic": "Rośliny",
+      "difficulty": "Łatwy",
+      "question": "Czy rośliny potrzebują światła do fotosyntezy?",
+      "correctBoolean": true,
+      "image": "images/fotosynteza.png",
+      "imageAlt": "Ilustracja fotosyntezy i rośliny korzystającej ze światła",
+      "explanation": "Tak. Światło jest potrzebne do fotosyntezy."
+    },
+    {
+      "id": "science1-energy",
+      "type": "multiple",
+      "grade": "中1",
+      "subject": "Nauki przyrodnicze",
+      "topic": "Energia",
+      "difficulty": "Łatwy",
+      "question": "Zaznacz odnawialne źródła energii:",
+      "answers": ["Energia słoneczna", "Węgiel", "Wiatr", "Ropa naftowa"],
+      "correctAnswers": [0, 2],
+      "explanation": "Energia słoneczna i wiatrowa są odnawialne."
+    },
+    {
+      "id": "jp1-liczby",
+      "type": "single",
+      "grade": "中1",
+      "subject": "Język japoński",
+      "topic": "Liczby",
+      "difficulty": "Łatwy",
+      "question": "Co oznacza japońskie słowo „ichi”?",
+      "answers": ["Jeden", "Dwa", "Trzy", "Cztery"],
+      "correct": 0,
+      "explanation": "Ichi oznacza jeden."
+    },
+    {
+      "id": "pol1-czasownik",
+      "type": "single",
+      "grade": "中1",
+      "subject": "Język polski",
+      "topic": "Czasownik",
+      "difficulty": "Łatwy",
+      "question": "Wybierz poprawne zdanie:",
+      "answers": [
+        "Uczniowie odnawia szkołę.",
+        "Uczniowie odnawiają szkołę.",
+        "Uczniowie odnawiasz szkołę.",
+        "Uczniowie odnawiam szkołę."
+      ],
+      "correct": 1,
+      "explanation": "Do słowa „uczniowie” pasuje forma „odnawiają”."
+    },
+    {
+      "id": "math2-area",
+      "type": "single",
+      "grade": "中2",
+      "subject": "Matematyka",
+      "topic": "Pole prostokąta",
+      "difficulty": "Średni",
+      "question": "Boisko ma 20 m długości i 10 m szerokości. Jakie jest jego pole?",
+      "answers": ["30 m²", "60 m²", "200 m²", "400 m²"],
+      "correct": 2,
+      "explanation": "Pole prostokąta to długość razy szerokość: 20 × 10 = 200 m²."
+    },
+    {
+      "id": "math2-fraction",
+      "type": "text",
+      "grade": "中2",
+      "subject": "Matematyka",
+      "topic": "Ułamki",
+      "difficulty": "Średni",
+      "question": "Podaj ułamek równoważny 1/2, mający mianownik 10.",
+      "acceptedAnswers": ["5/10"],
+      "explanation": "Po pomnożeniu licznika i mianownika przez 5 otrzymujemy 5/10."
+    },
+    {
+      "id": "science2-eco",
+      "type": "multiple",
+      "grade": "中2",
+      "subject": "Nauki przyrodnicze",
+      "topic": "Ekologia",
+      "difficulty": "Średni",
+      "question": "Które działania pomagają oszczędzać energię w szkole?",
+      "answers": [
+        "Wyłączenie światła w pustej sali",
+        "Pozostawienie włączonych komputerów po lekcji",
+        "Zamykanie okien przy włączonym ogrzewaniu",
+        "Włączanie urządzeń bez potrzeby"
+      ],
+      "correctAnswers": [0, 2],
+      "explanation": "Wyłączanie światła i rozsądne korzystanie z ogrzewania zmniejszają zużycie energii."
+    },
+    {
+      "id": "en2-past",
+      "type": "single",
+      "grade": "中2",
+      "subject": "Angielski",
+      "topic": "Czas przeszły",
+      "difficulty": "Średni",
+      "question": "Wybierz zdanie poprawnie zapisane w czasie przeszłym:",
+      "answers": [
+        "We visit the museum yesterday.",
+        "We visited the museum yesterday.",
+        "We visits the museum yesterday.",
+        "We visiting the museum yesterday."
+      ],
+      "correct": 1,
+      "explanation": "Czasownik regularny visit w czasie przeszłym ma formę visited."
+    },
+    {
+      "id": "pol2-adverb",
+      "type": "boolean",
+      "grade": "中2",
+      "subject": "Język polski",
+      "topic": "Części mowy",
+      "difficulty": "Średni",
+      "question": "Czy „szybko” w zdaniu „Pociąg jedzie szybko” jest przysłówkiem?",
+      "correctBoolean": true,
+      "explanation": "Tak. „Szybko” określa, jak jedzie pociąg."
+    },
+    {
+      "id": "math3-percent",
+      "type": "text",
+      "grade": "中3",
+      "subject": "Matematyka",
+      "topic": "Procenty",
+      "difficulty": "Trudny",
+      "question": "Ile wynosi 25% z 80?",
+      "acceptedAnswers": ["20", "dwadzieścia"],
+      "explanation": "25% to jedna czwarta, a jedna czwarta z 80 to 20."
+    },
+    {
+      "id": "science3-ecosystem",
+      "type": "boolean",
+      "grade": "中3",
+      "subject": "Nauki przyrodnicze",
+      "topic": "Ekosystem",
+      "difficulty": "Trudny",
+      "question": "Czy różnorodność gatunków może pomagać ekosystemowi zachować równowagę?",
+      "correctBoolean": true,
+      "explanation": "Tak. Różne organizmy pełnią odmienne role w ekosystemie."
+    },
+    {
+      "id": "jp3-sentence",
+      "type": "word_order",
+      "grade": "中3",
+      "subject": "Język japoński",
+      "topic": "Proste zdania",
+      "difficulty": "Trudny",
+      "question": "Ułóż zdanie „To jest książka.”",
+      "words": ["です", "これは", "本"],
+      "correctWords": ["これは", "本", "です"],
+      "explanation": "これは本です。 oznacza „To jest książka”."
+    },
+    {
+      "id": "soc3-collaboration",
+      "type": "multiple",
+      "grade": "中3",
+      "subject": "Wiedza o społeczeństwie",
+      "topic": "Współpraca",
+      "difficulty": "Trudny",
+      "question": "Które zachowania pomagają grupie podjąć wspólną decyzję?",
+      "answers": [
+        "Wysłuchanie różnych pomysłów",
+        "Przerywanie każdej wypowiedzi",
+        "Omówienie zalet i wad rozwiązań",
+        "Ignorowanie opinii pozostałych osób"
+      ],
+      "correctAnswers": [0, 2],
+      "explanation": "Wysłuchanie pomysłów i omówienie ich pomaga podjąć przemyślaną decyzję."
+    }
+  ]
+}
