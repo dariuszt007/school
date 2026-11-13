@@ -1,238 +1,197 @@
 {
   "settings": {
-    "difficulty": "Łatwy"
+    "difficulty": "Easy"
   },
+  "classes": [
+    {
+      "id": "c1",
+      "names": {
+        "pl": "Klasa 1",
+        "en": "Year 1",
+        "ja": "中学1年"
+      }
+    },
+    {
+      "id": "c2",
+      "names": {
+        "pl": "Klasa 2",
+        "en": "Year 2",
+        "ja": "中学2年"
+      }
+    },
+    {
+      "id": "c3",
+      "names": {
+        "pl": "Klasa 3",
+        "en": "Year 3",
+        "ja": "中学3年"
+      }
+    }
+  ],
   "questions": [
     {
-      "id": "m1-mnozenie",
+      "id": "math-1",
       "type": "single",
-      "grade": "中1",
-      "subject": "Matematyka",
-      "topic": "Mnożenie",
-      "difficulty": "Łatwy",
-      "question": "Ile wynosi 7 × 8?",
-      "answers": ["54", "56", "64", "48"],
+      "classId": "c1",
+      "subject": {
+        "pl": "Matematyka",
+        "en": "Mathematics",
+        "ja": "数学"
+      },
+      "topic": {
+        "pl": "Mnożenie",
+        "en": "Multiplication",
+        "ja": "かけ算"
+      },
+      "difficulty": "Easy",
+      "question": {
+        "pl": "Ile wynosi 7 × 8?",
+        "en": "What is 7 × 8?",
+        "ja": "7 × 8 はいくつですか？"
+      },
+      "answers": {
+        "pl": ["54", "56", "64", "48"],
+        "en": ["54", "56", "64", "48"],
+        "ja": ["54", "56", "64", "48"]
+      },
       "correct": 1,
-      "explanation": "7 × 8 = 56."
+      "explanation": {
+        "pl": "7 × 8 = 56.",
+        "en": "7 × 8 = 56.",
+        "ja": "7 × 8 = 56 です。"
+      }
     },
     {
-      "id": "m1-dzielenie",
-      "type": "text",
-      "grade": "中1",
-      "subject": "Matematyka",
-      "topic": "Dzielenie",
-      "difficulty": "Łatwy",
-      "question": "Oblicz 36 ÷ 4.",
-      "acceptedAnswers": ["9", "dziewięć"],
-      "explanation": "36 podzielone przez 4 to 9."
-    },
-    {
-      "id": "en1-zdanie",
+      "id": "english-1",
       "type": "word_order",
-      "grade": "中1",
-      "subject": "Angielski",
-      "topic": "Szyk zdania",
-      "difficulty": "Łatwy",
-      "question": "Ułóż zdanie po angielsku:",
-      "words": ["every", "I", "school", "go", "to", "day"],
-      "correctWords": ["I", "go", "to", "school", "every", "day"],
-      "explanation": "I go to school every day."
+      "classId": "c1",
+      "subject": {
+        "pl": "Angielski",
+        "en": "English",
+        "ja": "英語"
+      },
+      "topic": {
+        "pl": "Szyk zdania",
+        "en": "Word order",
+        "ja": "語順"
+      },
+      "difficulty": "Easy",
+      "question": {
+        "pl": "Ułóż zdanie po angielsku:",
+        "en": "Build the sentence:",
+        "ja": "英語の文を作りましょう："
+      },
+      "words": {
+        "pl": ["every", "I", "school", "go", "to", "day"],
+        "en": ["every", "I", "school", "go", "to", "day"],
+        "ja": ["every", "I", "school", "go", "to", "day"]
+      },
+      "correctWords": {
+        "pl": ["I", "go", "to", "school", "every", "day"],
+        "en": ["I", "go", "to", "school", "every", "day"],
+        "ja": ["I", "go", "to", "school", "every", "day"]
+      },
+      "explanation": {
+        "pl": "Poprawne zdanie: I go to school every day.",
+        "en": "The correct sentence is: I go to school every day.",
+        "ja": "正しい文は「I go to school every day.」です。"
+      }
     },
     {
-      "id": "en1-library",
-      "type": "single",
-      "grade": "中1",
-      "subject": "Angielski",
-      "topic": "Słownictwo",
-      "difficulty": "Łatwy",
-      "question": "Które słowo oznacza „biblioteka”?",
-      "answers": ["Kitchen", "Library", "Garden", "Window"],
-      "correct": 1,
-      "explanation": "Library oznacza bibliotekę."
-    },
-    {
-      "id": "en1-be",
-      "type": "text",
-      "grade": "中1",
-      "subject": "Angielski",
-      "topic": "Czasownik be",
-      "difficulty": "Łatwy",
-      "question": "Uzupełnij zdanie: I ___ a student.",
-      "acceptedAnswers": ["am"],
-      "explanation": "Z zaimkiem I używamy formy am."
-    },
-    {
-      "id": "science1-plants",
+      "id": "science-1",
       "type": "boolean",
-      "grade": "中1",
-      "subject": "Nauki przyrodnicze",
-      "topic": "Rośliny",
-      "difficulty": "Łatwy",
-      "question": "Czy rośliny potrzebują światła do fotosyntezy?",
+      "classId": "c1",
+      "subject": {
+        "pl": "Nauki przyrodnicze",
+        "en": "Science",
+        "ja": "理科"
+      },
+      "topic": {
+        "pl": "Rośliny",
+        "en": "Plants",
+        "ja": "植物"
+      },
+      "difficulty": "Easy",
+      "question": {
+        "pl": "Czy rośliny potrzebują światła do fotosyntezy?",
+        "en": "Do plants need light for photosynthesis?",
+        "ja": "植物は光合成に光を必要としますか？"
+      },
       "correctBoolean": true,
-      "image": "images/fotosynteza.png",
-      "imageAlt": "Ilustracja fotosyntezy i rośliny korzystającej ze światła",
-      "explanation": "Tak. Światło jest potrzebne do fotosyntezy."
+      "explanation": {
+        "pl": "Tak. Światło jest potrzebne do fotosyntezy.",
+        "en": "Yes. Light is needed for photosynthesis.",
+        "ja": "はい。光合成には光が必要です。"
+      },
+      "image": "images/photosynthesis.png",
+      "imageAlt": {
+        "pl": "Roślina korzystająca ze światła słonecznego",
+        "en": "A plant using sunlight",
+        "ja": "太陽の光を受ける植物"
+      }
     },
     {
-      "id": "science1-energy",
+      "id": "science-2",
       "type": "multiple",
-      "grade": "中1",
-      "subject": "Nauki przyrodnicze",
-      "topic": "Energia",
-      "difficulty": "Łatwy",
-      "question": "Zaznacz odnawialne źródła energii:",
-      "answers": ["Energia słoneczna", "Węgiel", "Wiatr", "Ropa naftowa"],
+      "classId": "c2",
+      "subject": {
+        "pl": "Nauki przyrodnicze",
+        "en": "Science",
+        "ja": "理科"
+      },
+      "topic": {
+        "pl": "Energia",
+        "en": "Energy",
+        "ja": "エネルギー"
+      },
+      "difficulty": "Medium",
+      "question": {
+        "pl": "Zaznacz odnawialne źródła energii:",
+        "en": "Select the renewable energy sources:",
+        "ja": "再生可能エネルギーを選びましょう："
+      },
+      "answers": {
+        "pl": ["Energia słoneczna", "Węgiel", "Wiatr", "Ropa naftowa"],
+        "en": ["Solar energy", "Coal", "Wind", "Oil"],
+        "ja": ["太陽光エネルギー", "石炭", "風力", "石油"]
+      },
       "correctAnswers": [0, 2],
-      "explanation": "Energia słoneczna i wiatrowa są odnawialne."
+      "explanation": {
+        "pl": "Energia słoneczna i wiatrowa są odnawialne.",
+        "en": "Solar and wind power are renewable.",
+        "ja": "太陽光と風力は再生可能エネルギーです。"
+      }
     },
     {
-      "id": "jp1-liczby",
-      "type": "single",
-      "grade": "中1",
-      "subject": "Język japoński",
-      "topic": "Liczby",
-      "difficulty": "Łatwy",
-      "question": "Co oznacza japońskie słowo „ichi”?",
-      "answers": ["Jeden", "Dwa", "Trzy", "Cztery"],
-      "correct": 0,
-      "explanation": "Ichi oznacza jeden."
-    },
-    {
-      "id": "pol1-czasownik",
-      "type": "single",
-      "grade": "中1",
-      "subject": "Język polski",
-      "topic": "Czasownik",
-      "difficulty": "Łatwy",
-      "question": "Wybierz poprawne zdanie:",
-      "answers": [
-        "Uczniowie odnawia szkołę.",
-        "Uczniowie odnawiają szkołę.",
-        "Uczniowie odnawiasz szkołę.",
-        "Uczniowie odnawiam szkołę."
-      ],
-      "correct": 1,
-      "explanation": "Do słowa „uczniowie” pasuje forma „odnawiają”."
-    },
-    {
-      "id": "math2-area",
-      "type": "single",
-      "grade": "中2",
-      "subject": "Matematyka",
-      "topic": "Pole prostokąta",
-      "difficulty": "Średni",
-      "question": "Boisko ma 20 m długości i 10 m szerokości. Jakie jest jego pole?",
-      "answers": ["30 m²", "60 m²", "200 m²", "400 m²"],
-      "correct": 2,
-      "explanation": "Pole prostokąta to długość razy szerokość: 20 × 10 = 200 m²."
-    },
-    {
-      "id": "math2-fraction",
+      "id": "math-2",
       "type": "text",
-      "grade": "中2",
-      "subject": "Matematyka",
-      "topic": "Ułamki",
-      "difficulty": "Średni",
-      "question": "Podaj ułamek równoważny 1/2, mający mianownik 10.",
-      "acceptedAnswers": ["5/10"],
-      "explanation": "Po pomnożeniu licznika i mianownika przez 5 otrzymujemy 5/10."
-    },
-    {
-      "id": "science2-eco",
-      "type": "multiple",
-      "grade": "中2",
-      "subject": "Nauki przyrodnicze",
-      "topic": "Ekologia",
-      "difficulty": "Średni",
-      "question": "Które działania pomagają oszczędzać energię w szkole?",
-      "answers": [
-        "Wyłączenie światła w pustej sali",
-        "Pozostawienie włączonych komputerów po lekcji",
-        "Zamykanie okien przy włączonym ogrzewaniu",
-        "Włączanie urządzeń bez potrzeby"
-      ],
-      "correctAnswers": [0, 2],
-      "explanation": "Wyłączanie światła i rozsądne korzystanie z ogrzewania zmniejszają zużycie energii."
-    },
-    {
-      "id": "en2-past",
-      "type": "single",
-      "grade": "中2",
-      "subject": "Angielski",
-      "topic": "Czas przeszły",
-      "difficulty": "Średni",
-      "question": "Wybierz zdanie poprawnie zapisane w czasie przeszłym:",
-      "answers": [
-        "We visit the museum yesterday.",
-        "We visited the museum yesterday.",
-        "We visits the museum yesterday.",
-        "We visiting the museum yesterday."
-      ],
-      "correct": 1,
-      "explanation": "Czasownik regularny visit w czasie przeszłym ma formę visited."
-    },
-    {
-      "id": "pol2-adverb",
-      "type": "boolean",
-      "grade": "中2",
-      "subject": "Język polski",
-      "topic": "Części mowy",
-      "difficulty": "Średni",
-      "question": "Czy „szybko” w zdaniu „Pociąg jedzie szybko” jest przysłówkiem?",
-      "correctBoolean": true,
-      "explanation": "Tak. „Szybko” określa, jak jedzie pociąg."
-    },
-    {
-      "id": "math3-percent",
-      "type": "text",
-      "grade": "中3",
-      "subject": "Matematyka",
-      "topic": "Procenty",
-      "difficulty": "Trudny",
-      "question": "Ile wynosi 25% z 80?",
-      "acceptedAnswers": ["20", "dwadzieścia"],
-      "explanation": "25% to jedna czwarta, a jedna czwarta z 80 to 20."
-    },
-    {
-      "id": "science3-ecosystem",
-      "type": "boolean",
-      "grade": "中3",
-      "subject": "Nauki przyrodnicze",
-      "topic": "Ekosystem",
-      "difficulty": "Trudny",
-      "question": "Czy różnorodność gatunków może pomagać ekosystemowi zachować równowagę?",
-      "correctBoolean": true,
-      "explanation": "Tak. Różne organizmy pełnią odmienne role w ekosystemie."
-    },
-    {
-      "id": "jp3-sentence",
-      "type": "word_order",
-      "grade": "中3",
-      "subject": "Język japoński",
-      "topic": "Proste zdania",
-      "difficulty": "Trudny",
-      "question": "Ułóż zdanie „To jest książka.”",
-      "words": ["です", "これは", "本"],
-      "correctWords": ["これは", "本", "です"],
-      "explanation": "これは本です。 oznacza „To jest książka”."
-    },
-    {
-      "id": "soc3-collaboration",
-      "type": "multiple",
-      "grade": "中3",
-      "subject": "Wiedza o społeczeństwie",
-      "topic": "Współpraca",
-      "difficulty": "Trudny",
-      "question": "Które zachowania pomagają grupie podjąć wspólną decyzję?",
-      "answers": [
-        "Wysłuchanie różnych pomysłów",
-        "Przerywanie każdej wypowiedzi",
-        "Omówienie zalet i wad rozwiązań",
-        "Ignorowanie opinii pozostałych osób"
-      ],
-      "correctAnswers": [0, 2],
-      "explanation": "Wysłuchanie pomysłów i omówienie ich pomaga podjąć przemyślaną decyzję."
+      "classId": "c2",
+      "subject": {
+        "pl": "Matematyka",
+        "en": "Mathematics",
+        "ja": "数学"
+      },
+      "topic": {
+        "pl": "Dzielenie",
+        "en": "Division",
+        "ja": "割り算"
+      },
+      "difficulty": "Medium",
+      "question": {
+        "pl": "Oblicz 36 ÷ 4.",
+        "en": "Calculate 36 ÷ 4.",
+        "ja": "36 ÷ 4 を計算しましょう。"
+      },
+      "acceptedAnswers": {
+        "pl": ["9", "dziewięć"],
+        "en": ["9", "nine"],
+        "ja": ["9", "九"]
+      },
+      "explanation": {
+        "pl": "36 podzielone przez 4 to 9.",
+        "en": "36 divided by 4 is 9.",
+        "ja": "36 ÷ 4 = 9 です。"
+      }
     }
   ]
 }
