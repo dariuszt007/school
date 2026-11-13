@@ -1,1 +1,872 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f3f7ff">
+  <title>Misja: Ocal szkołę!</title>
 
+  <style>
+    :root {
+      --ink: #183153;
+      --muted: #65758b;
+      --blue: #3778f6;
+      --blue-dark: #245bc4;
+      --green: #18875b;
+      --red: #bf3e45;
+      --paper: #ffffff;
+      --line: #e4ebf5;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 22px;
+      color: var(--ink);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(ellipse at top left, #e2eeff 0, transparent 42%),
+        linear-gradient(145deg, #f5f8ff, #edf5f3);
+    }
+
+    button {
+      font: inherit;
+      touch-action: manipulation;
+    }
+
+    .app {
+      width: min(1100px, 100%);
+      margin: 0 auto;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-icon {
+      display: grid;
+      width: 50px;
+      height: 50px;
+      place-items: center;
+      border-radius: 16px;
+      background: #fff;
+      box-shadow: 0 5px 18px #294b7618;
+      font-size: 27px;
+    }
+
+    h1, h2, p {
+      margin-top: 0;
+    }
+
+    h1 {
+      margin-bottom: 2px;
+      font-size: clamp(1.35rem, 4vw, 2rem);
+    }
+
+    .subtitle {
+      margin: 0;
+      color: var(--muted);
+      font-size: .95rem;
+    }
+
+    .score-pill {
+      flex-shrink: 0;
+      padding: 11px 16px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #fff;
+      font-weight: 750;
+      box-shadow: 0 5px 18px #294b7610;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1.08fr .92fr;
+      gap: 20px;
+      align-items: stretch;
+    }
+
+    .card {
+      overflow: hidden;
+      border: 1px solid #e6edf5;
+      border-radius: 24px;
+      background: var(--paper);
+      box-shadow: 0 14px 38px #294b7612;
+    }
+
+    .school-card {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .scene {
+      padding: 16px 16px 0;
+      background: linear-gradient(#e8f5ff, #f7fbff 72%, #dff0e0 72%);
+    }
+
+    .scene svg {
+      display: block;
+      width: 100%;
+      height: auto;
+      max-height: 390px;
+    }
+
+    .stage-label {
+      min-height: 75px;
+      padding: 15px 20px 18px;
+      background: #fff;
+    }
+
+    .stage-label strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 1.08rem;
+    }
+
+    .stage-label span {
+      color: var(--muted);
+      font-size: .92rem;
+    }
+
+    .quiz-card {
+      display: flex;
+      flex-direction: column;
+      padding: clamp(20px, 4vw, 32px);
+    }
+
+    .mission-tag {
+      align-self: flex-start;
+      margin-bottom: 16px;
+      padding: 7px 11px;
+      border-radius: 999px;
+      color: #285db5;
+      background: #edf4ff;
+      font-size: .82rem;
+      font-weight: 750;
+    }
+
+    .progress-info {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 8px;
+      color: var(--muted);
+      font-size: .9rem;
+      font-weight: 650;
+    }
+
+    .progress-track {
+      height: 10px;
+      overflow: hidden;
+      margin-bottom: 25px;
+      border-radius: 999px;
+      background: #e9eff7;
+    }
+
+    .progress-fill {
+      width: 0;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #59b987, #2c9b70);
+      transition: width .35s ease;
+    }
+
+    .question {
+      margin-bottom: 12px;
+      font-size: clamp(1.25rem, 3vw, 1.65rem);
+      line-height: 1.25;
+    }
+
+    .question-text {
+      margin-bottom: 20px;
+      color: #4f6178;
+      line-height: 1.5;
+    }
+
+    .answers {
+      display: grid;
+      gap: 11px;
+    }
+
+    .answer {
+      width: 100%;
+      min-height: 54px;
+      padding: 12px 15px;
+      border: 2px solid var(--line);
+      border-radius: 15px;
+      color: var(--ink);
+      background: #fff;
+      text-align: left;
+      cursor: pointer;
+      transition: border-color .15s, background .15s, transform .15s;
+    }
+
+    .answer:hover:not(:disabled) {
+      border-color: #9bbcf8;
+      background: #f7faff;
+    }
+
+    .answer:active:not(:disabled) {
+      transform: scale(.99);
+    }
+
+    .answer.selected {
+      border-color: var(--blue);
+      background: #eff5ff;
+    }
+
+    .answer.correct {
+      border-color: #59b987;
+      background: #effaf4;
+    }
+
+    .answer.incorrect {
+      border-color: #e28a8d;
+      background: #fff3f3;
+    }
+
+    .answer:disabled {
+      cursor: default;
+    }
+
+    .feedback {
+      min-height: 56px;
+      margin: 16px 0 6px;
+      padding: 0;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .feedback.good {
+      color: var(--green);
+    }
+
+    .feedback.bad {
+      color: var(--red);
+    }
+
+    .primary-button, .secondary-button {
+      min-height: 52px;
+      padding: 12px 18px;
+      border: 0;
+      border-radius: 15px;
+      font-weight: 750;
+      cursor: pointer;
+    }
+
+    .primary-button {
+      width: 100%;
+      color: #fff;
+      background: var(--blue);
+      box-shadow: 0 7px 14px #3778f633;
+    }
+
+    .primary-button:hover {
+      background: var(--blue-dark);
+    }
+
+    .primary-button:disabled {
+      color: #8996a9;
+      background: #e7edf5;
+      box-shadow: none;
+      cursor: not-allowed;
+    }
+
+    .secondary-button {
+      margin-top: 12px;
+      color: var(--ink);
+      background: #edf2f8;
+    }
+
+    .end-screen {
+      display: none;
+      margin: auto 0;
+      text-align: center;
+    }
+
+    .end-screen .big-icon {
+      margin-bottom: 12px;
+      font-size: 64px;
+    }
+
+    .end-screen h2 {
+      font-size: 1.8rem;
+    }
+
+    .end-screen p {
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .small-note {
+      margin: 16px 2px 0;
+      color: var(--muted);
+      font-size: .82rem;
+      text-align: center;
+    }
+
+    /* Etapy odnawiania szkoły */
+    .school-scene .old-paint {
+      fill: #f1d4a6;
+      transition: fill .6s ease;
+    }
+
+    .school-scene .new-paint {
+      opacity: 0;
+      fill: #f7e7bd;
+      transition: opacity .6s ease;
+    }
+
+    .school-scene .cracks {
+      opacity: 1;
+      transition: opacity .35s ease;
+    }
+
+    .school-scene .scaffold {
+      opacity: 0;
+      transition: opacity .35s ease;
+    }
+
+    .school-scene .garden-details {
+      opacity: .2;
+      transition: opacity .5s ease;
+    }
+
+    .school-scene .new-sign {
+      opacity: 0;
+      transition: opacity .5s ease;
+    }
+
+    .school-scene.stage-1 .scaffold,
+    .school-scene.stage-2 .scaffold {
+      opacity: 1;
+    }
+
+    .school-scene.stage-1 .cracks,
+    .school-scene.stage-2 .cracks,
+    .school-scene.stage-3 .cracks {
+      opacity: 0;
+    }
+
+    .school-scene.stage-2 .old-paint,
+    .school-scene.stage-3 .old-paint {
+      fill: #c9ead2;
+    }
+
+    .school-scene.stage-2 .garden-details,
+    .school-scene.stage-3 .garden-details {
+      opacity: 1;
+    }
+
+    .school-scene.stage-3 .scaffold {
+      opacity: 0;
+    }
+
+    .school-scene.stage-3 .new-sign {
+      opacity: 1;
+    }
+
+    @media (max-width: 760px) {
+      body {
+        padding: 14px;
+      }
+
+      header {
+        align-items: flex-start;
+      }
+
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .scene svg {
+        max-height: 300px;
+      }
+
+      .quiz-card {
+        min-height: 500px;
+      }
+    }
+
+    @media (max-width: 420px) {
+      body {
+        padding: 10px;
+      }
+
+      .brand-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 13px;
+        font-size: 23px;
+      }
+
+      .score-pill {
+        padding: 9px 12px;
+        font-size: .9rem;
+      }
+
+      .card {
+        border-radius: 20px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="app">
+    <header>
+      <div class="brand">
+        <div class="brand-icon" aria-hidden="true">🏫</div>
+        <div>
+          <h1>Misja: Ocal szkołę!</h1>
+          <p class="subtitle">Rozwiązuj zadania i odnawiaj swój kampus.</p>
+        </div>
+      </div>
+      <div class="score-pill">⭐ Punkty: <span id="score">0</span></div>
+    </header>
+
+    <div class="layout">
+      <section class="card school-card" aria-label="Postęp remontu szkoły">
+        <div class="scene">
+          <svg id="schoolScene" class="school-scene stage-0"
+               viewBox="0 0 720 440" role="img"
+               aria-label="Ilustracja szkoły, która jest odnawiana">
+            <!-- Niebo i słońce -->
+            <circle cx="600" cy="75" r="35" fill="#ffd66b"/>
+            <path d="M0 300 Q150 275 290 300 T720 292 V440 H0Z" fill="#b8dfb0"/>
+            <path d="M0 344 Q180 320 360 348 T720 338 V440 H0Z" fill="#9ed294"/>
+
+            <!-- Drzewa -->
+            <g>
+              <rect x="75" y="220" width="18" height="95" rx="8" fill="#916446"/>
+              <circle cx="84" cy="205" r="43" fill="#69b779"/>
+              <circle cx="60" cy="224" r="26" fill="#82c98a"/>
+              <circle cx="108" cy="224" r="26" fill="#55a96a"/>
+            </g>
+            <g>
+              <rect x="630" y="220" width="18" height="100" rx="8" fill="#916446"/>
+              <circle cx="638" cy="204" r="45" fill="#69b779"/>
+              <circle cx="614" cy="224" r="26" fill="#82c98a"/>
+              <circle cx="662" cy="224" r="26" fill="#55a96a"/>
+            </g>
+
+            <!-- Budynek -->
+            <g stroke="#8e6e54" stroke-width="5" stroke-linejoin="round">
+              <path d="M170 170 L360 72 L550 170 Z" fill="#dc8d69"/>
+              <rect x="188" y="165" width="344" height="195" rx="8"
+                    class="old-paint"/>
+              <rect x="188" y="165" width="344" height="195" rx="8"
+                    class="new-paint"/>
+            </g>
+
+            <!-- Dach -->
+            <path d="M165 173 L360 66 L555 173 L540 185 L360 88 L180 185Z"
+                  fill="#a8584d"/>
+
+            <!-- Okna -->
+            <g stroke="#fff" stroke-width="5">
+              <rect x="220" y="200" width="69" height="56" rx="5" fill="#83c9e8"/>
+              <path d="M254 201 V256 M220 228 H289" stroke="#fff" stroke-width="4"/>
+              <rect x="430" y="200" width="69" height="56" rx="5" fill="#83c9e8"/>
+              <path d="M464 201 V256 M430 228 H499" stroke="#fff" stroke-width="4"/>
+              <rect x="220" y="278" width="69" height="54" rx="5" fill="#83c9e8"/>
+              <path d="M254 279 V331 M220 305 H289" stroke="#fff" stroke-width="4"/>
+              <rect x="430" y="278" width="69" height="54" rx="5" fill="#83c9e8"/>
+              <path d="M464 279 V331 M430 305 H499" stroke="#fff" stroke-width="4"/>
+            </g>
+
+            <!-- Wejście -->
+            <rect x="324" y="256" width="72" height="104" rx="34 34 4 4"
+                  fill="#537c9c" stroke="#fff" stroke-width="5"/>
+            <circle cx="382" cy="310" r="4" fill="#ffd66b"/>
+            <path d="M304 360 H416" stroke="#d4a675" stroke-width="8"/>
+
+            <!-- Pęknięcia, znikają w trakcie remontu -->
+            <g class="cracks" fill="none" stroke="#b05d4c" stroke-width="4"
+               stroke-linecap="round">
+              <path d="M310 181 l-10 18 12 10 -13 20"/>
+              <path d="M406 333 l10 -13 -7 -11 11 -16"/>
+              <path d="M195 270 l13 8 -9 12"/>
+            </g>
+
+            <!-- Rusztowanie -->
+            <g class="scaffold" fill="none" stroke="#64758a" stroke-width="5">
+              <path d="M168 158 V365 M192 158 V365 M168 205 H192 M168 258 H192
+                       M168 311 H192 M168 365 H192 M162 158 H198"/>
+              <path d="M522 158 V365 M546 158 V365 M522 205 H546 M522 258 H546
+                       M522 311 H546 M522 365 H546 M516 158 H552"/>
+              <path d="M167 245 H193 M521 245 H547"/>
+            </g>
+
+            <!-- Tabliczka przy odnowionej szkole -->
+            <g class="new-sign">
+              <rect x="287" y="132" width="146" height="30" rx="10" fill="#fff"/>
+              <text x="360" y="153" text-anchor="middle" font-size="15"
+                    font-weight="800" fill="#3778f6">NASZA SZKOŁA</text>
+            </g>
+
+            <!-- Kwiaty, krzewy i ścieżka -->
+            <g class="garden-details">
+              <path d="M322 360 L398 360 L435 420 H285Z" fill="#d9c6a5"/>
+              <g>
+                <circle cx="230" cy="360" r="10" fill="#f2769b"/>
+                <circle cx="251" cy="370" r="9" fill="#f5c44d"/>
+                <circle cx="475" cy="365" r="10" fill="#a17bea"/>
+                <circle cx="497" cy="370" r="9" fill="#f2769b"/>
+                <path d="M230 370 V390 M251 379 V393 M475 375 V395 M497 379 V394"
+                      stroke="#399968" stroke-width="5"/>
+              </g>
+            </g>
+
+            <!-- Narzędzia remontowe -->
+            <g transform="translate(115 342)">
+              <rect x="0" y="24" width="48" height="32" rx="6" fill="#f5bd50"/>
+              <path d="M10 23 V10 H38 V23" fill="none" stroke="#8c6335" stroke-width="5"/>
+              <rect x="4" y="38" width="40" height="5" fill="#d99237"/>
+            </g>
+
+            <!-- Małe uczniowskie postacie -->
+            <g>
+              <circle cx="565" cy="347" r="13" fill="#f1bd8f"/>
+              <path d="M551 363 Q565 350 579 363 L585 395 H546Z" fill="#5186c8"/>
+              <path d="M551 393 L548 419 M579 393 L583 419" stroke="#324d70" stroke-width="7"/>
+              <circle cx="605" cy="354" r="12" fill="#d99d75"/>
+              <path d="M592 369 Q605 357 618 369 L623 397 H588Z" fill="#ed8b68"/>
+              <path d="M594 396 L591 419 M617 396 L620 419" stroke="#324d70" stroke-width="7"/>
+            </g>
+
+            <!-- Chmurki -->
+            <g fill="#fff" opacity=".85">
+              <ellipse cx="155" cy="78" rx="35" ry="15"/>
+              <circle cx="138" cy="72" r="17"/>
+              <circle cx="161" cy="65" r="22"/>
+              <circle cx="181" cy="76" r="15"/>
+            </g>
+          </svg>
+        </div>
+
+        <div class="stage-label">
+          <strong id="stageTitle">Etap 1: Czas na remont!</strong>
+          <span id="stageText">Rozwiązuj zadania, aby zdobyć materiały budowlane.</span>
+        </div>
+      </section>
+
+      <section class="card quiz-card" aria-live="polite">
+        <div id="quizScreen">
+          <div class="mission-tag">🧠 Wyzwanie drużyny</div>
+
+          <div class="progress-info">
+            <span id="questionNumber">Zadanie 1 z 10</span>
+            <span id="progressPercent">0% misji</span>
+          </div>
+          <div class="progress-track" aria-label="Postęp misji">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+
+          <h2 class="question" id="questionTitle">Wczytywanie zadania...</h2>
+          <p class="question-text" id="questionText"></p>
+
+          <div class="answers" id="answers"></div>
+          <p class="feedback" id="feedback"></p>
+          <button class="primary-button" id="mainButton" disabled>
+            Wybierz odpowiedź
+          </button>
+          <p class="small-note">Każda dobra odpowiedź pomaga odnowić szkołę.</p>
+        </div>
+
+        <div class="end-screen" id="endScreen">
+          <div class="big-icon" id="endIcon">🏫</div>
+          <h2 id="endTitle">Misja zakończona!</h2>
+          <p id="endText"></p>
+          <button class="primary-button" id="restartButton">Zagraj ponownie</button>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    // Pytania możesz zmieniać lub dodawać w tej tablicy.
+    // "correct" to numer poprawnej odpowiedzi, liczony od zera.
+    const questions = [
+      {
+        subject: "Matematyka",
+        question: "Do remontu klasy potrzeba 8 puszek farby. Jedna puszka kosztuje 12 zł. Ile kosztuje komplet?",
+        answers: ["20 zł", "86 zł", "96 zł", "108 zł"],
+        correct: 2,
+        explanation: "8 × 12 zł = 96 zł."
+      },
+      {
+        subject: "Angielski",
+        question: "Które angielskie słowo oznacza „biblioteka”?",
+        answers: ["Kitchen", "Library", "Garden", "Window"],
+        correct: 1,
+        explanation: "„Library” oznacza bibliotekę."
+      },
+      {
+        subject: "Nauki przyrodnicze",
+        question: "Które źródło energii jest odnawialne?",
+        answers: ["Węgiel", "Ropa naftowa", "Energia słoneczna", "Gaz ziemny"],
+        correct: 2,
+        explanation: "Energia słoneczna pochodzi ze źródła, które naturalnie się odnawia."
+      },
+      {
+        subject: "Matematyka",
+        question: "Boisko ma 20 m długości i 10 m szerokości. Jakie jest jego pole?",
+        answers: ["30 m²", "60 m²", "200 m²", "400 m²"],
+        correct: 2,
+        explanation: "Pole prostokąta to długość × szerokość: 20 × 10 = 200 m²."
+      },
+      {
+        subject: "Język polski",
+        question: "Wybierz poprawnie zapisane zdanie.",
+        answers: [
+          "Uczniowie odnawia szkole.",
+          "Uczniowie odnawiają szkołę.",
+          "Uczniowie odnawiasz szkołę.",
+          "Uczniowie odnawiam szkołę."
+        ],
+        correct: 1,
+        explanation: "Podmiot „uczniowie” wymaga formy „odnawiają”."
+      },
+      {
+        subject: "Nauki przyrodnicze",
+        question: "Co najlepiej zrobić, aby ograniczyć zużycie prądu w pustej klasie?",
+        answers: [
+          "Zostawić włączone światła",
+          "Włączyć dodatkowy grzejnik",
+          "Wyłączyć światła i urządzenia",
+          "Zostawić otwarte okna zimą"
+        ],
+        correct: 2,
+        explanation: "Wyłączanie nieużywanych urządzeń pomaga oszczędzać energię."
+      },
+      {
+        subject: "Wiedza o społeczeństwie",
+        question: "Drużyna nie zgadza się, jaki kolor wybrać do klasy. Co będzie najlepszym rozwiązaniem?",
+        answers: [
+          "Nie słuchać nikogo",
+          "Wspólnie omówić pomysły i zagłosować",
+          "Zrezygnować z remontu",
+          "Pozwolić jednej osobie zdecydować bez rozmowy"
+        ],
+        correct: 1,
+        explanation: "Rozmowa i wspólne głosowanie pomagają podjąć decyzję w grupie."
+      },
+      {
+        subject: "Matematyka",
+        question: "Na półce było 36 książek. Uczniowie ułożyli je po równo na 4 półkach. Ile książek jest na każdej?",
+        answers: ["8", "9", "12", "32"],
+        correct: 1,
+        explanation: "36 ÷ 4 = 9 książek na każdej półce."
+      },
+      {
+        subject: "Angielski",
+        question: "Uzupełnij zdanie: “The students ___ in the classroom.”",
+        answers: ["is", "am", "are", "be"],
+        correct: 2,
+        explanation: "Dla „the students” używamy „are”."
+      },
+      {
+        subject: "Nauki przyrodnicze",
+        question: "Które działanie pomoże zadbać o rośliny w szkolnym ogrodzie?",
+        answers: [
+          "Podlewać je odpowiednio do pogody",
+          "Zrywać wszystkie liście",
+          "Trzymać je stale w ciemności",
+          "Wylewać na nie napoje gazowane"
+        ],
+        correct: 0,
+        explanation: "Rośliny potrzebują wody, światła i odpowiedniej opieki."
+      }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+    let completed = 0;
+    let selectedAnswer = null;
+    let answered = false;
+
+    const scoreElement = document.getElementById("score");
+    const questionNumber = document.getElementById("questionNumber");
+    const progressPercent = document.getElementById("progressPercent");
+    const progressFill = document.getElementById("progressFill");
+    const questionTitle = document.getElementById("questionTitle");
+    const questionText = document.getElementById("questionText");
+    const answersBox = document.getElementById("answers");
+    const feedback = document.getElementById("feedback");
+    const mainButton = document.getElementById("mainButton");
+    const schoolScene = document.getElementById("schoolScene");
+    const stageTitle = document.getElementById("stageTitle");
+    const stageText = document.getElementById("stageText");
+
+    function renderQuestion() {
+      const item = questions[currentQuestion];
+      selectedAnswer = null;
+      answered = false;
+
+      questionNumber.textContent = `Zadanie ${currentQuestion + 1} z ${questions.length}`;
+      questionTitle.textContent = item.subject;
+      questionText.textContent = item.question;
+      feedback.textContent = "";
+      feedback.className = "feedback";
+      mainButton.textContent = "Sprawdź odpowiedź";
+      mainButton.disabled = true;
+
+      answersBox.innerHTML = "";
+
+      item.answers.forEach((answer, index) => {
+        const button = document.createElement("button");
+        button.className = "answer";
+        button.type = "button";
+        button.textContent = answer;
+        button.addEventListener("click", () => selectAnswer(index));
+        answersBox.appendChild(button);
+      });
+
+      updateProgress();
+    }
+
+    function selectAnswer(index) {
+      if (answered) return;
+
+      selectedAnswer = index;
+
+      [...answersBox.children].forEach((button, buttonIndex) => {
+        button.classList.toggle("selected", buttonIndex === index);
+      });
+
+      mainButton.disabled = false;
+    }
+
+    function checkAnswer() {
+      if (selectedAnswer === null || answered) return;
+
+      answered = true;
+      completed++;
+
+      const item = questions[currentQuestion];
+      const buttons = [...answersBox.children];
+      buttons.forEach(button => button.disabled = true);
+
+      if (selectedAnswer === item.correct) {
+        score++;
+        scoreElement.textContent = score;
+        buttons[selectedAnswer].classList.add("correct");
+        feedback.textContent = `Dobrze! ${item.explanation}`;
+        feedback.className = "feedback good";
+      } else {
+        buttons[selectedAnswer].classList.add("incorrect");
+        buttons[item.correct].classList.add("correct");
+        feedback.textContent = `Jeszcze nie tym razem. ${item.explanation}`;
+        feedback.className = "feedback bad";
+      }
+
+      updateProgress();
+      updateSchool();
+
+      mainButton.textContent =
+        currentQuestion === questions.length - 1 ? "Zobacz wynik" : "Następne zadanie";
+      mainButton.disabled = false;
+    }
+
+    function updateProgress() {
+      const percent = Math.round((completed / questions.length) * 100);
+      progressFill.style.width = `${percent}%`;
+      progressPercent.textContent = `${percent}% misji`;
+    }
+
+    function updateSchool() {
+      let stage = 0;
+
+      if (completed >= 9) stage = 3;
+      else if (completed >= 6) stage = 2;
+      else if (completed >= 3) stage = 1;
+
+      schoolScene.classList.remove("stage-0", "stage-1", "stage-2", "stage-3");
+      schoolScene.classList.add(`stage-${stage}`);
+
+      const stages = [
+        ["Etap 1: Czas na remont!", "Rozwiązuj zadania, aby zdobyć materiały budowlane."],
+        ["Etap 2: Remont trwa!", "Pojawiły się rusztowania. Szkoła nabiera nowych kolorów."],
+        ["Etap 3: Powstaje ogród!", "Dobra robota — kampus staje się coraz piękniejszy."],
+        ["Etap 4: Szkoła odnowiona!", "Udało się! Wasza drużyna przywróciła szkole blask."]
+      ];
+
+      stageTitle.textContent = stages[stage][0];
+      stageText.textContent = stages[stage][1];
+    }
+
+    function finishGame() {
+      document.getElementById("quizScreen").style.display = "none";
+      const endScreen = document.getElementById("endScreen");
+      endScreen.style.display = "block";
+
+      const endTitle = document.getElementById("endTitle");
+      const endText = document.getElementById("endText");
+      const endIcon = document.getElementById("endIcon");
+
+      if (score === questions.length) {
+        endIcon.textContent = "🏆";
+        endTitle.textContent = "Perfekcyjna misja!";
+        endText.textContent =
+          `Zdobyliście ${score} z ${questions.length} punktów i odnowiliście szkołę. Świetna praca zespołowa!`;
+      } else if (score >= 6) {
+        endIcon.textContent = "🌟";
+        endTitle.textContent = "Szkoła odnowiona!";
+        endText.textContent =
+          `Zdobyliście ${score} z ${questions.length} punktów. Wasza drużyna wykonała kawał dobrej roboty!`;
+      } else {
+        endIcon.textContent = "🛠️";
+        endTitle.textContent = "Misja ukończona!";
+        endText.textContent =
+          `Zdobyliście ${score} z ${questions.length} punktów. Każda próba to nauka — spróbujcie jeszcze raz i zdobądźcie więcej materiałów!`;
+      }
+    }
+
+    function restartGame() {
+      currentQuestion = 0;
+      score = 0;
+      completed = 0;
+      scoreElement.textContent = "0";
+
+      document.getElementById("quizScreen").style.display = "block";
+      document.getElementById("endScreen").style.display = "none";
+
+      updateSchool();
+      renderQuestion();
+    }
+
+    mainButton.addEventListener("click", () => {
+      if (!answered) {
+        checkAnswer();
+        return;
+      }
+
+      if (currentQuestion === questions.length - 1) {
+        finishGame();
+      } else {
+        currentQuestion++;
+        renderQuestion();
+      }
+    });
+
+    document.getElementById("restartButton").addEventListener("click", restartGame);
+
+    renderQuestion();
+  </script>
+</body>
+</html>
