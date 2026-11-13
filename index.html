@@ -1,1229 +1,1312 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#f2f5ff">
-  <title>Misja: Ocal szkołę!</title>
-
-  <style>
-    :root {
-      --ink: #202744;
-      --muted: #65708a;
-      --blue: #5368da;
-      --blue-dark: #4054c1;
-      --paper: #fff;
-      --line: #e4e8f2;
-      --green: #208459;
-      --red: #bb4453;
-      --yellow: #ffca56;
-      --shadow: 0 12px 35px #29375d18;
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      padding: 18px;
-      color: var(--ink);
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background:
-        radial-gradient(ellipse at 8% 0%, #e3eaff, transparent 40%),
-        linear-gradient(145deg, #f6f7ff, #edf7f2);
-    }
-
-    button, input, select, textarea { font: inherit; }
-    button { touch-action: manipulation; }
-    .app { width: min(1180px, 100%); margin: auto; }
-
-    header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 14px;
-      margin: 0 auto 16px;
-    }
-
-    .brand { display: flex; align-items: center; gap: 12px; }
-    .brand-icon {
-      display: grid;
-      width: 52px;
-      height: 52px;
-      flex: 0 0 52px;
-      place-items: center;
-      border-radius: 17px;
-      background: white;
-      box-shadow: var(--shadow);
-      font-size: 28px;
-    }
-
-    h1 { margin: 0 0 3px; font-size: clamp(1.25rem, 4vw, 1.9rem); }
-    .subtitle { margin: 0; color: var(--muted); font-size: .93rem; }
-
-    .score-pill {
-      padding: 10px 15px;
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      background: white;
-      font-weight: 800;
-      white-space: nowrap;
-    }
-
-    .tabs {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 16px;
-      padding: 6px;
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      background: #ffffffc9;
-    }
-
-    .tab {
-      min-height: 44px;
-      padding: 9px 15px;
-      border: 0;
-      border-radius: 11px;
-      color: var(--muted);
-      background: transparent;
-      font-weight: 750;
-      cursor: pointer;
-    }
-
-    .tab.active { color: white; background: var(--blue); }
-
-    .page { display: none; }
-    .page.active { display: block; }
-
-    .student-layout {
-      display: grid;
-      grid-template-columns: 1.1fr .9fr;
-      gap: 18px;
-      align-items: stretch;
-    }
-
-    .card {
-      overflow: hidden;
-      border: 1px solid #e6eaf2;
-      border-radius: 23px;
-      background: var(--paper);
-      box-shadow: var(--shadow);
-    }
-
-    .school-card { display: flex; flex-direction: column; }
-    .scene {
-      padding: 12px 12px 0;
-      background: linear-gradient(#dff2ff, #f9fbff 66%, #b7d99a 66%);
-    }
-
-    .scene svg { display: block; width: 100%; height: auto; }
-
-    .stage-caption { padding: 14px 19px 17px; }
-    .stage-caption strong { display: block; margin-bottom: 4px; font-size: 1.08rem; }
-    .stage-caption span { color: var(--muted); font-size: .92rem; }
-
-    .quiz-card { padding: clamp(18px, 3vw, 29px); }
-    .tag {
-      display: inline-flex;
-      margin-bottom: 12px;
-      padding: 7px 11px;
-      border-radius: 999px;
-      color: #4054b3;
-      background: #eef0ff;
-      font-size: .82rem;
-      font-weight: 800;
-    }
-
-    .setup-title, .question-title { margin: 0 0 9px; font-size: 1.35rem; }
-    .help { color: var(--muted); line-height: 1.5; }
-    .field { margin: 14px 0; }
-    .field label { display: block; margin-bottom: 6px; font-weight: 750; }
-    input, select, textarea {
-      width: 100%;
-      min-height: 45px;
-      padding: 10px 12px;
-      border: 1px solid #d9dfeb;
-      border-radius: 12px;
-      color: var(--ink);
-      background: white;
-    }
-    textarea { min-height: 82px; resize: vertical; }
-    input:focus, select:focus, textarea:focus {
-      outline: 3px solid #5368da24;
-      border-color: var(--blue);
-    }
-
-    .primary, .secondary, .danger, .small-button {
-      min-height: 45px;
-      padding: 10px 14px;
-      border: 0;
-      border-radius: 12px;
-      font-weight: 800;
-      cursor: pointer;
-    }
-
-    .primary { color: white; background: var(--blue); }
-    .primary:hover { background: var(--blue-dark); }
-    .primary:disabled { color: #8991a5; background: #e6e9f0; cursor: not-allowed; }
-    .secondary { color: var(--ink); background: #edf0f7; }
-    .danger { color: #9b2938; background: #fff0f1; }
-    .small-button { min-height: 37px; padding: 7px 10px; color: var(--ink); background: #edf0f7; }
-
-    .full { width: 100%; }
-    .hidden { display: none !important; }
-
-    .progress-row {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      margin: 8px 0;
-      color: var(--muted);
-      font-size: .9rem;
-      font-weight: 700;
-    }
-
-    .progress-track {
-      height: 10px;
-      overflow: hidden;
-      margin-bottom: 22px;
-      border-radius: 20px;
-      background: #ebedf4;
-    }
-
-    .progress-fill {
-      width: 0;
-      height: 100%;
-      border-radius: inherit;
-      background: linear-gradient(90deg, #77bd8c, #278a63);
-      transition: width .3s;
-    }
-
-    .question-text { margin: 8px 0 18px; color: #515c75; line-height: 1.55; }
-    .answers { display: grid; gap: 9px; }
-    .answer {
-      width: 100%;
-      min-height: 50px;
-      padding: 11px 13px;
-      border: 2px solid var(--line);
-      border-radius: 13px;
-      color: var(--ink);
-      background: white;
-      text-align: left;
-      cursor: pointer;
-    }
-    .answer:hover:not(:disabled) { border-color: #9da9ed; background: #f7f8ff; }
-    .answer.selected { border-color: var(--blue); background: #f0f2ff; }
-    .answer.correct { border-color: #63b68b; background: #effaf4; }
-    .answer.incorrect { border-color: #df8992; background: #fff1f2; }
-    .answer:disabled { cursor: default; }
-
-    .feedback { min-height: 42px; margin: 13px 0 8px; color: var(--muted); line-height: 1.45; }
-    .feedback.good { color: var(--green); }
-    .feedback.bad { color: var(--red); }
-
-    .admin-layout { display: grid; grid-template-columns: minmax(280px, .75fr) 1.25fr; gap: 18px; }
-    .admin-card { padding: 21px; }
-    .admin-card h2 { margin-top: 0; }
-    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .form-actions { display: flex; gap: 9px; flex-wrap: wrap; margin-top: 14px; }
-    .list-toolbar { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
-
-    .question-list { display: grid; gap: 10px; }
-    .question-item {
-      padding: 13px;
-      border: 1px solid var(--line);
-      border-radius: 15px;
-      background: #fcfcff;
-    }
-    .question-item p { margin: 8px 0; line-height: 1.4; }
-    .badges { display: flex; flex-wrap: wrap; gap: 6px; }
-    .badge {
-      padding: 4px 8px;
-      border-radius: 999px;
-      color: #4f5b78;
-      background: #edf0f7;
-      font-size: .76rem;
-      font-weight: 750;
-    }
-    .item-actions { display: flex; flex-wrap: wrap; gap: 6px; }
-
-    .notice {
-      margin: 12px 0;
-      padding: 11px 13px;
-      border-radius: 12px;
-      color: #68521d;
-      background: #fff8e4;
-      font-size: .9rem;
-      line-height: 1.45;
-    }
-
-    .result { text-align: center; padding: 28px 10px; }
-    .result-icon { font-size: 58px; }
-    .result h2 { margin: 8px 0; }
-    .result p { color: var(--muted); line-height: 1.5; }
-
-    /* Manga-stylizowana ilustracja i zmiany stanu budynku */
-    .school-art .building-wall { fill: #efc887; transition: fill .4s; }
-    .school-art .roof { fill: #bf6257; transition: fill .4s; }
-    .school-art .cracks { opacity: 1; transition: opacity .3s; }
-    .school-art .scaffold, .school-art .paint-tools { opacity: 0; transition: opacity .3s; }
-    .school-art .flowers, .school-art .new-sign, .school-art .sparkles {
-      opacity: 0; transition: opacity .35s;
-    }
-    .school-art .rubble { opacity: .9; transition: opacity .3s; }
-    .school-art .window-glow { opacity: .1; transition: opacity .3s; }
-
-    .school-art.stage-1 .building-wall { fill: #e5b77e; }
-    .school-art.stage-1 .rubble { opacity: .65; }
-    .school-art.stage-1 .cracks { opacity: .75; }
-
-    .school-art.stage-2 .building-wall { fill: #f2d69e; }
-    .school-art.stage-2 .cracks { opacity: .45; }
-    .school-art.stage-2 .scaffold, .school-art.stage-2 .paint-tools { opacity: 1; }
-    .school-art.stage-2 .rubble { opacity: .4; }
-
-    .school-art.stage-3 .building-wall { fill: #c8e9be; }
-    .school-art.stage-3 .cracks { opacity: .15; }
-    .school-art.stage-3 .scaffold, .school-art.stage-3 .paint-tools { opacity: .5; }
-    .school-art.stage-3 .flowers { opacity: .5; }
-    .school-art.stage-3 .window-glow { opacity: .5; }
-
-    .school-art.stage-4 .building-wall { fill: #a8d8b2; }
-    .school-art.stage-4 .roof { fill: #5368a6; }
-    .school-art.stage-4 .cracks { opacity: 0; }
-    .school-art.stage-4 .scaffold, .school-art.stage-4 .paint-tools, .school-art.stage-4 .rubble { opacity: 0; }
-    .school-art.stage-4 .flowers, .school-art.stage-4 .new-sign { opacity: 1; }
-    .school-art.stage-4 .window-glow { opacity: .8; }
-
-    .school-art.stage-5 .building-wall { fill: #9ed8b0; }
-    .school-art.stage-5 .roof { fill: #485b9d; }
-    .school-art.stage-5 .cracks, .school-art.stage-5 .scaffold, .school-art.stage-5 .paint-tools,
-    .school-art.stage-5 .rubble { opacity: 0; }
-    .school-art.stage-5 .flowers, .school-art.stage-5 .new-sign, .school-art.stage-5 .sparkles { opacity: 1; }
-    .school-art.stage-5 .window-glow { opacity: 1; }
-
-    @media (max-width: 820px) {
-      .student-layout, .admin-layout { grid-template-columns: 1fr; }
-    }
-
-    @media (max-width: 520px) {
-      body { padding: 10px; }
-      header { align-items: flex-start; }
-      .brand-icon { width: 43px; height: 43px; flex-basis: 43px; font-size: 23px; }
-      .score-pill { padding: 9px 10px; font-size: .88rem; }
-      .tabs { display: grid; grid-template-columns: 1fr 1fr; }
-      .tab { padding: 8px; }
-      .two-col, .list-toolbar { grid-template-columns: 1fr; }
-      .card { border-radius: 19px; }
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f3f5ff">
+<title>Misja: Mistrzowie wiedzy</title>
+<style>
+:root {
+  --ink: #232b45;
+  --muted: #69738b;
+  --blue: #5268d7;
+  --line: #e4e8f2;
+  --good: #218258;
+  --bad: #b63e50;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  padding: 16px;
+  background: linear-gradient(145deg, #eff2ff, #eff8f1);
+  color: var(--ink);
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+button, input, select, textarea { font: inherit; }
+button { touch-action: manipulation; cursor: pointer; }
+.app { width: min(1120px, 100%); margin: auto; }
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.brand { display: flex; align-items: center; gap: 11px; }
+.logo {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  background: #fff;
+  border-radius: 15px;
+  box-shadow: 0 7px 24px #24315b16;
+  font-size: 26px;
+}
+h1 { font-size: clamp(1.25rem, 4vw, 1.8rem); margin: 0 0 3px; }
+.subtitle, .help { color: var(--muted); margin: 0; line-height: 1.5; }
+.score {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 99px;
+  padding: 10px 14px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+.tabs {
+  display: flex;
+  gap: 7px;
+  padding: 6px;
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  background: #ffffffc9;
+  margin-bottom: 15px;
+}
+.tab {
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-weight: 750;
+}
+.tab.active { background: var(--blue); color: white; }
+.page { display: none; }
+.page.active { display: block; }
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.card {
+  background: #fff;
+  border: 1px solid #e7eaf2;
+  border-radius: 21px;
+  box-shadow: 0 12px 34px #24315b12;
+  overflow: hidden;
+}
+.visual {
+  min-height: 330px;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: radial-gradient(circle at 50% 40%, #fff 0, #f4f6ff 68%, #e8edff 100%);
+}
+.visual img {
+  max-width: 100%;
+  max-height: 390px;
+  object-fit: contain;
+  border-radius: 15px;
+}
+.reaction { text-align: center; animation: pop .35s ease; }
+.reaction .emoji { font-size: clamp(78px, 13vw, 145px); line-height: 1.1; }
+.reaction .badge { font-weight: 900; color: #634bba; margin-top: 7px; font-size: 1.08rem; }
+.visual-hint { color: var(--muted); text-align: center; padding: 16px; }
+@keyframes pop {
+  0% { transform: scale(.5); opacity: .4; }
+  75% { transform: scale(1.1); }
+  100% { transform: scale(1); opacity: 1; }
+}
+.caption { padding: 14px 18px 17px; }
+.caption strong { display: block; margin-bottom: 4px; }
+.panel { padding: clamp(18px, 3vw, 28px); }
+.tag {
+  display: inline-block;
+  padding: 7px 10px;
+  border-radius: 99px;
+  background: #eef0ff;
+  color: #4156b9;
+  font-size: .83rem;
+  font-weight: 800;
+  margin-bottom: 12px;
+}
+.field { margin: 12px 0; }
+.field label { display: block; font-weight: 750; margin-bottom: 5px; }
+input, select, textarea {
+  width: 100%;
+  min-height: 43px;
+  padding: 9px 11px;
+  border: 1px solid #d8deea;
+  border-radius: 11px;
+  background: white;
+  color: var(--ink);
+}
+textarea { min-height: 75px; resize: vertical; }
+input:focus, select:focus, textarea:focus {
+  outline: 3px solid #5268d72b;
+  border-color: var(--blue);
+}
+.primary, .secondary, .danger, .small {
+  border: 0;
+  border-radius: 11px;
+  font-weight: 800;
+  padding: 10px 13px;
+  min-height: 42px;
+}
+.primary { background: var(--blue); color: white; }
+.primary:hover { background: #4055c2; }
+.primary:disabled { background: #e6e9f1; color: #8790a4; cursor: not-allowed; }
+.secondary, .small { background: #edf0f7; color: var(--ink); }
+.danger { background: #fff0f2; color: #9f3040; }
+.full { width: 100%; }
+.hidden { display: none !important; }
+.progressline {
+  display: flex;
+  justify-content: space-between;
+  color: var(--muted);
+  font-size: .9rem;
+  font-weight: 700;
+  margin: 9px 0 7px;
+}
+.track {
+  height: 9px;
+  border-radius: 99px;
+  background: #eaedf4;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+.fill {
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg, #7fc895, #34895e);
+  transition: width .25s;
+}
+.qtitle { margin: 0 0 8px; font-size: 1.35rem; }
+.qtext { color: #515d75; line-height: 1.5; margin: 0 0 16px; }
+.answers { display: grid; gap: 9px; }
+.answer {
+  min-height: 49px;
+  text-align: left;
+  padding: 10px 13px;
+  border: 2px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+  color: var(--ink);
+}
+.answer.selected { border-color: var(--blue); background: #f1f3ff; }
+.answer.correct { border-color: #61b88b; background: #effaf4; }
+.answer.wrong { border-color: #df8490; background: #fff0f2; }
+.answer:disabled { cursor: default; }
+.feedback { min-height: 43px; margin: 12px 0 8px; line-height: 1.45; color: var(--muted); }
+.feedback.good { color: var(--good); }
+.feedback.bad { color: var(--bad); }
+.word-zone {
+  min-height: 54px;
+  padding: 7px;
+  border: 2px dashed #cbd2e3;
+  border-radius: 12px;
+  margin: 8px 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.word-bank { display: flex; flex-wrap: wrap; gap: 7px; }
+.word {
+  width: auto;
+  min-height: 43px;
+  padding: 8px 12px;
+  border: 1px solid #cfd6e6;
+  border-radius: 11px;
+  background: #fff;
+}
+.admin-grid {
+  display: grid;
+  grid-template-columns: minmax(280px, .8fr) 1.2fr;
+  gap: 16px;
+}
+.admin-card { padding: 19px; }
+.admin-card h2 { margin: 0 0 12px; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.option-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  margin: 7px 0;
+  align-items: center;
+}
+.correct-pick { display: flex; align-items: center; gap: 5px; white-space: nowrap; font-size: .86rem; }
+.correct-pick input { width: 18px; min-height: 18px; }
+.item { border: 1px solid var(--line); background: #fdfdff; border-radius: 13px; padding: 12px; margin: 9px 0; }
+.badges { display: flex; flex-wrap: wrap; gap: 5px; }
+.badge-chip { font-size: .75rem; font-weight: 750; background: #edf0f7; color: #505b75; padding: 4px 8px; border-radius: 99px; }
+.item p { line-height: 1.4; }
+.item-actions { display: flex; flex-wrap: wrap; gap: 6px; }
+.note {
+  margin: 12px 0;
+  padding: 11px 13px;
+  border-radius: 11px;
+  background: #fff8e3;
+  color: #68541e;
+  line-height: 1.45;
+  font-size: .9rem;
+}
+.export-box { min-height: 120px; font-family: ui-monospace, monospace; font-size: .83rem; }
+.result { text-align: center; padding: 20px 0; }
+.result .emoji { font-size: 70px; }
+.result h2 { margin: 5px 0; }
+.result p { color: var(--muted); line-height: 1.5; }
+@media (max-width: 780px) {
+  .grid, .admin-grid { grid-template-columns: 1fr; }
+  .visual { min-height: 230px; }
+}
+@media (max-width: 500px) {
+  body { padding: 10px; }
+  .tabs { display: grid; grid-template-columns: 1fr 1fr; }
+  .tab { padding: 9px 6px; }
+  .two { grid-template-columns: 1fr; }
+  .logo { width: 42px; height: 42px; }
+  .score { padding: 9px; }
+}
+</style>
 </head>
 
 <body>
-  <main class="app">
-    <header>
-      <div class="brand">
-        <div class="brand-icon" aria-hidden="true">🏫</div>
-        <div>
-          <h1>Misja: Ocal szkołę!</h1>
-          <p class="subtitle">Ucz się, zdobywaj punkty i odnawiaj kampus.</p>
+<main class="app">
+  <header>
+    <div class="brand">
+      <div class="logo" aria-hidden="true">🎒</div>
+      <div>
+        <h1>Misja: Mistrzowie wiedzy</h1>
+        <p class="subtitle">Ucz się, zdobywaj odznaki i baw się dobrze.</p>
+      </div>
+    </div>
+    <div class="score">⭐ Punkty: <span id="score">0</span></div>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab active" data-page="studentPage">Panel ucznia</button>
+    <button class="tab" data-page="adminPage">Panel nauczyciela</button>
+  </nav>
+
+  <section id="studentPage" class="page active">
+    <div class="grid">
+      <section class="card">
+        <div class="visual" id="visual" aria-live="polite">
+          <div class="visual-hint">Wybierz misję, aby rozpocząć.</div>
         </div>
-      </div>
-      <div class="score-pill">⭐ Punkty: <span id="score">0</span></div>
-    </header>
+        <div class="caption">
+          <strong id="visualTitle">Twoja przygoda zaczyna się tutaj</strong>
+          <span id="visualCaption" class="help">Ilustracje pytań pokażą się tutaj.</span>
+        </div>
+      </section>
 
-    <nav class="tabs" aria-label="Wybór panelu">
-      <button class="tab active" data-page="studentPage">Panel ucznia</button>
-      <button class="tab" data-page="adminPage">Panel nauczyciela</button>
-    </nav>
+      <section class="card panel">
+        <div id="setup">
+          <span class="tag">🎒 Panel ucznia</span>
+          <h2 class="qtitle">Wybierz zestaw pytań</h2>
+          <p class="help">Poziom trudności ustala nauczyciel.</p>
 
-    <!-- PANEL UCZNIA -->
-    <section id="studentPage" class="page active">
-      <div class="student-layout">
-        <section class="card school-card">
-          <div class="scene">
-            <svg id="schoolArt" class="school-art stage-0" viewBox="0 0 760 500"
-                 role="img" aria-label="Manga-rysunek odnawianej japońskiej szkoły">
-              <defs>
-                <pattern id="mangaDots" width="12" height="12" patternUnits="userSpaceOnUse">
-                  <circle cx="2" cy="2" r="1.2" fill="#65749a" opacity=".18"/>
-                </pattern>
-                <linearGradient id="sky" x2="0" y2="1">
-                  <stop offset="0" stop-color="#a9dcff"/>
-                  <stop offset="1" stop-color="#f6fbff"/>
-                </linearGradient>
-              </defs>
-
-              <!-- Tło, promienie i chmury -->
-              <rect width="760" height="500" rx="22" fill="url(#sky)"/>
-              <path d="M0 300 Q170 270 350 305 T760 290 V500 H0Z" fill="#a8d88e"/>
-              <path d="M0 350 Q190 320 380 350 T760 340 V500 H0Z" fill="#89c579"/>
-              <path d="M0 0 H760 V500 H0Z" fill="url(#mangaDots)" opacity=".42"/>
-              <circle cx="650" cy="76" r="43" fill="#ffda72"/>
-              <g fill="#fff" opacity=".9">
-                <ellipse cx="112" cy="90" rx="45" ry="19"/>
-                <circle cx="91" cy="83" r="22"/><circle cx="119" cy="74" r="28"/><circle cx="143" cy="90" r="18"/>
-                <ellipse cx="500" cy="115" rx="37" ry="15"/>
-                <circle cx="483" cy="109" r="18"/><circle cx="506" cy="102" r="23"/><circle cx="526" cy="115" r="16"/>
-              </g>
-
-              <!-- Drzewa -->
-              <g stroke="#513c46" stroke-width="5">
-                <path d="M75 350 V230" stroke="#8a5944" stroke-width="17"/>
-                <circle cx="75" cy="220" r="47" fill="#62b975"/>
-                <circle cx="47" cy="241" r="26" fill="#8cd27d"/>
-                <circle cx="102" cy="244" r="27" fill="#4da766"/>
-                <path d="M680 355 V226" stroke="#8a5944" stroke-width="17"/>
-                <circle cx="680" cy="216" r="48" fill="#62b975"/>
-                <circle cx="650" cy="239" r="27" fill="#8cd27d"/>
-                <circle cx="707" cy="241" r="28" fill="#4da766"/>
-              </g>
-
-              <!-- Budynek główny -->
-              <g stroke="#493d55" stroke-width="6" stroke-linejoin="round">
-                <path class="roof" d="M158 183 L380 61 L602 183 L584 198 L380 91 L176 198Z"/>
-                <rect class="building-wall" x="183" y="177" width="394" height="221" rx="8"/>
-                <rect x="183" y="177" width="394" height="221" rx="8"
-                      fill="none" stroke="#493d55" stroke-width="6"/>
-              </g>
-
-              <!-- Pęknięcia i plamy widoczne w stanie ruiny -->
-              <g class="cracks" fill="none" stroke="#8f4e49" stroke-width="5" stroke-linecap="round">
-                <path d="M310 193 l-13 20 13 12 -17 22"/>
-                <path d="M493 286 l-18 16 13 14 -20 22"/>
-                <path d="M208 310 l20 8 -12 18"/>
-                <path d="M375 345 l-10 16 12 10"/>
-                <path d="M530 205 l-12 12"/>
-              </g>
-
-              <!-- Okna -->
-              <g stroke="#fff" stroke-width="5">
-                <g fill="#8dc8e5">
-                  <rect x="218" y="211" width="71" height="61" rx="5"/>
-                  <rect x="315" y="211" width="71" height="61" rx="5"/>
-                  <rect x="468" y="211" width="71" height="61" rx="5"/>
-                  <rect x="218" y="295" width="71" height="61" rx="5"/>
-                  <rect x="468" y="295" width="71" height="61" rx="5"/>
-                </g>
-                <g stroke="#fff" stroke-width="4">
-                  <path d="M253 212 V271 M219 241 H288"/>
-                  <path d="M350 212 V271 M316 241 H385"/>
-                  <path d="M503 212 V271 M469 241 H538"/>
-                  <path d="M253 296 V355 M219 325 H288"/>
-                  <path d="M503 296 V355 M469 325 H538"/>
-                </g>
-              </g>
-              <g class="window-glow" fill="#ffe99b">
-                <rect x="220" y="213" width="67" height="57" rx="3"/>
-                <rect x="317" y="213" width="67" height="57" rx="3"/>
-                <rect x="470" y="213" width="67" height="57" rx="3"/>
-                <rect x="220" y="297" width="67" height="57" rx="3"/>
-                <rect x="470" y="297" width="67" height="57" rx="3"/>
-              </g>
-
-              <!-- Wejście -->
-              <path d="M348 398 V310 Q348 279 380 279 Q412 279 412 310 V398Z"
-                    fill="#526997" stroke="#fff" stroke-width="6"/>
-              <path d="M380 285 V396" stroke="#fff" stroke-width="4"/>
-              <circle cx="402" cy="344" r="4" fill="#ffdb70"/>
-              <path d="M326 399 H434" stroke="#c89a62" stroke-width="10"/>
-
-              <!-- Znak szkolny -->
-              <g class="new-sign">
-                <rect x="323" y="145" width="114" height="27" rx="8" fill="#fff" stroke="#493d55" stroke-width="3"/>
-                <text x="380" y="164" text-anchor="middle" font-size="14" font-weight="900" fill="#4054b3">がっこう</text>
-              </g>
-
-              <!-- Rusztowanie -->
-              <g class="scaffold" fill="none" stroke="#5a6579" stroke-width="6">
-                <path d="M160 166 V405 M185 166 V405 M160 215 H185 M160 270 H185 M160 325 H185 M160 380 H185 M154 166 H191"/>
-                <path d="M575 166 V405 M600 166 V405 M575 215 H600 M575 270 H600 M575 325 H600 M575 380 H600 M569 166 H606"/>
-                <path d="M159 255 H186 M574 255 H601"/>
-              </g>
-
-              <!-- Narzędzia i gruz przy ruinie -->
-              <g class="rubble">
-                <path d="M130 409 l18 -23 20 22 18 -15 19 18Z" fill="#8e897f" stroke="#5c5a61" stroke-width="3"/>
-                <path d="M540 410 l14 -19 21 20 15 -12 22 16Z" fill="#9a8c7f" stroke="#5c5a61" stroke-width="3"/>
-                <path d="M250 405 l10 -17 12 16Z" fill="#aaa197" stroke="#5c5a61" stroke-width="3"/>
-              </g>
-              <g class="paint-tools">
-                <rect x="123" y="390" width="37" height="33" rx="5" fill="#ffd35b" stroke="#493d55" stroke-width="3"/>
-                <path d="M132 389 V379 H151 V389" fill="none" stroke="#493d55" stroke-width="4"/>
-                <path d="M601 404 V370 M589 371 H613 M608 371 V389" fill="none" stroke="#493d55" stroke-width="5"/>
-              </g>
-
-              <!-- Kwiaty i krzewy -->
-              <g class="flowers">
-                <g stroke="#3e8f5a" stroke-width="4">
-                  <path d="M234 405 V375 M250 405 V381 M516 405 V376 M532 405 V384"/>
-                </g>
-                <g fill="#ff719b" stroke="#493d55" stroke-width="2">
-                  <circle cx="234" cy="373" r="8"/><circle cx="516" cy="374" r="8"/>
-                </g>
-                <g fill="#ffd34e" stroke="#493d55" stroke-width="2">
-                  <circle cx="250" cy="379" r="8"/><circle cx="532" cy="382" r="8"/>
-                </g>
-                <ellipse cx="243" cy="408" rx="32" ry="9" fill="#538e50"/>
-                <ellipse cx="524" cy="408" rx="32" ry="9" fill="#538e50"/>
-              </g>
-
-              <!-- Uczniowie w stylu kreskówkowo-mangowym -->
-              <g stroke="#493d55" stroke-width="3" stroke-linejoin="round">
-                <!-- Uczeń po lewej -->
-                <circle cx="104" cy="366" r="18" fill="#f0bd91"/>
-                <path d="M87 362 Q89 338 108 343 Q123 345 122 361 Q111 352 99 358Z" fill="#34364d"/>
-                <path d="M86 387 Q104 373 122 387 L128 426 H80Z" fill="#ed6b6b"/>
-                <path d="M87 423 L83 450 M119 423 L125 450" fill="none" stroke="#34364d" stroke-width="7"/>
-                <circle cx="99" cy="365" r="2.5" fill="#22243a"/>
-                <circle cx="112" cy="365" r="2.5" fill="#22243a"/>
-                <path d="M100 375 Q106 380 112 374" fill="none" stroke="#a34e5c"/>
-
-                <!-- Uczennica z prawej -->
-                <circle cx="643" cy="369" r="18" fill="#d99c74"/>
-                <path d="M625 368 Q620 341 644 342 Q667 345 662 371 L655 359 L635 355Z" fill="#393449"/>
-                <path d="M626 390 Q644 377 661 390 L669 427 H619Z" fill="#688fe4"/>
-                <path d="M628 424 L624 451 M658 424 L663 451" fill="none" stroke="#34364d" stroke-width="7"/>
-                <circle cx="638" cy="369" r="2.5" fill="#22243a"/>
-                <circle cx="651" cy="369" r="2.5" fill="#22243a"/>
-                <path d="M639 379 Q645 384 651 378" fill="none" stroke="#a34e5c"/>
-                <path d="M625 392 L608 379 M661 392 L674 376" fill="none" stroke="#d99c74" stroke-width="6"/>
-              </g>
-
-              <!-- Efekty mangowe -->
-              <g class="sparkles" stroke="#ffb936" stroke-width="5" stroke-linecap="round">
-                <path d="M139 130 V155 M127 143 H152"/>
-                <path d="M609 153 V176 M598 165 H621"/>
-                <path d="M388 40 V57 M379 49 H397"/>
-              </g>
-              <path d="M25 176 l17 -8 -7 17 18 6 -20 3 -4 18 -4 -18 -17 -5 18 -3Z"
-                    fill="#fff" opacity=".8"/>
-              <path d="M726 275 l14 -6 -6 15 14 5 -16 2 -3 15 -4 -15 -14 -4 15 -3Z"
-                    fill="#fff" opacity=".8"/>
-            </svg>
-          </div>
-
-          <div class="stage-caption">
-            <strong id="stageTitle">Szkoła potrzebuje pomocy!</strong>
-            <span id="stageText">Poprawne odpowiedzi odnawiają kampus. Błędne odpowiedzi cofają remont.</span>
-          </div>
-        </section>
-
-        <section class="card quiz-card">
-          <div id="setupScreen">
-            <span class="tag">🎒 Panel ucznia</span>
-            <h2 class="setup-title">Wybierz swoją misję</h2>
-            <p class="help">Poziom trudności ustawia nauczyciel. Wybierz klasę i zakres pytań.</p>
-
-            <div class="field">
-              <label for="studentGrade">Klasa</label>
-              <select id="studentGrade">
-                <option>中1</option><option>中2</option><option>中3</option>
-              </select>
-            </div>
-
-            <div class="field">
-              <label for="questionMode">Rodzaj zestawu</label>
-              <select id="questionMode">
-                <option value="mixed">Zestaw mieszany — różne przedmioty</option>
-                <option value="single">Jeden przedmiot</option>
-              </select>
-            </div>
-
-            <div class="field hidden" id="subjectField">
-              <label for="studentSubject">Przedmiot</label>
-              <select id="studentSubject"></select>
-            </div>
-
-            <div class="field">
-              <label for="studentTopic">Temat</label>
-              <select id="studentTopic"><option value="">Wszystkie tematy</option></select>
-            </div>
-
-            <p class="help" id="difficultyInfo"></p>
-            <button class="primary full" id="startButton">Rozpocznij grę</button>
-          </div>
-
-          <div id="playScreen" class="hidden" aria-live="polite">
-            <span class="tag" id="questionTag">📘 Zadanie</span>
-            <div class="progress-row">
-              <span id="questionCount">Zadanie 1 z 1</span>
-              <span id="progressPercent">0%</span>
-            </div>
-            <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
-            <h2 class="question-title" id="questionTitle"></h2>
-            <p class="question-text" id="questionText"></p>
-            <div class="answers" id="answers"></div>
-            <p class="feedback" id="feedback"></p>
-            <button class="primary full" id="answerButton" disabled>Wybierz odpowiedź</button>
-          </div>
-
-          <div id="resultScreen" class="result hidden">
-            <div class="result-icon" id="resultIcon">🏫</div>
-            <h2 id="resultTitle">Misja zakończona!</h2>
-            <p id="resultText"></p>
-            <button class="primary full" id="againButton">Zagraj ponownie</button>
-          </div>
-        </section>
-      </div>
-    </section>
-
-    <!-- PANEL NAUCZYCIELA -->
-    <section id="adminPage" class="page">
-      <div class="notice">
-        To panel demonstracyjny bez hasła. Dane zapisują się tylko w tej przeglądarce.
-        Nie wpisuj tu danych poufnych.
-      </div>
-
-      <div class="admin-layout">
-        <section class="card admin-card">
-          <h2>Ustawienia nauczyciela</h2>
           <div class="field">
-            <label for="teacherDifficulty">Poziom trudności dla uczniów</label>
-            <select id="teacherDifficulty">
-              <option value="Łatwy">Łatwy</option>
-              <option value="Średni">Średni</option>
-              <option value="Trudny">Trudny</option>
+            <label for="grade">Klasa</label>
+            <select id="grade">
+              <option>中1</option><option>中2</option><option>中3</option>
             </select>
           </div>
-          <p class="help">Uczeń nie może zmienić poziomu trudności w swoim panelu.</p>
+          <div class="field">
+            <label for="mode">Rodzaj zestawu</label>
+            <select id="mode">
+              <option value="mixed">Mieszany — różne przedmioty</option>
+              <option value="single">Jeden przedmiot</option>
+            </select>
+          </div>
+          <div class="field hidden" id="subjectField">
+            <label for="subject">Przedmiot</label>
+            <select id="subject"></select>
+          </div>
+          <div class="field">
+            <label for="topic">Temat</label>
+            <select id="topic"><option value="">Wszystkie tematy</option></select>
+          </div>
+          <p class="help" id="difficultyInfo"></p>
+          <button class="primary full" id="start">Rozpocznij grę</button>
+        </div>
 
-          <hr style="border:0;border-top:1px solid var(--line);margin:20px 0">
+        <div id="play" class="hidden" aria-live="polite">
+          <span class="tag" id="qTag">📘 Pytanie</span>
+          <div class="progressline"><span id="qCount"></span><span id="percent"></span></div>
+          <div class="track"><div class="fill" id="fill"></div></div>
+          <h2 class="qtitle" id="qTitle"></h2>
+          <p class="qtext" id="qText"></p>
+          <div class="answers" id="answers"></div>
+          <p class="feedback" id="feedback"></p>
+          <button class="primary full" id="answerButton" disabled>Wybierz odpowiedź</button>
+        </div>
 
-          <h2 id="formHeading">Dodaj pytanie</h2>
-          <form id="questionForm">
-            <input type="hidden" id="editId">
+        <div id="result" class="result hidden">
+          <div class="emoji" id="resultEmoji"></div>
+          <h2 id="resultTitle"></h2>
+          <p id="resultText"></p>
+          <button class="primary full" id="again">Zagraj ponownie</button>
+        </div>
+      </section>
+    </div>
+  </section>
 
-            <div class="two-col">
-              <div class="field">
-                <label for="formGrade">Klasa</label>
-                <select id="formGrade" required>
-                  <option>中1</option><option>中2</option><option>中3</option>
-                </select>
-              </div>
-              <div class="field">
-                <label for="formDifficulty">Trudność pytania</label>
-                <select id="formDifficulty" required>
-                  <option>Łatwy</option><option>Średni</option><option>Trudny</option>
-                </select>
-              </div>
-            </div>
+  <section id="adminPage" class="page">
+    <div class="note">
+      <strong>Źródłem danych jest plik `questions.json` na GitHubie.</strong>
+      Zmiany w panelu są tymczasowe: skopiuj eksportowany JSON, wklej go do pliku
+      `questions.json` w repozytorium i zatwierdź zmianę. GitHub Pages nie może
+      samodzielnie zapisywać do repozytorium.
+    </div>
 
-            <div class="two-col">
-              <div class="field">
-                <label for="formSubject">Przedmiot / kategoria</label>
-                <input id="formSubject" required placeholder="np. Matematyka">
-              </div>
-              <div class="field">
-                <label for="formTopic">Temat / zakres</label>
-                <input id="formTopic" required placeholder="np. Ułamki">
-              </div>
-            </div>
+    <div class="admin-grid">
+      <section class="card admin-card">
+        <h2>Ustawienia i pytanie</h2>
 
+        <div class="field">
+          <label for="teacherDifficulty">Poziom trudności dla uczniów</label>
+          <select id="teacherDifficulty">
+            <option>Łatwy</option><option>Średni</option><option>Trudny</option>
+          </select>
+        </div>
+
+        <hr style="border:0;border-top:1px solid #e4e8f2;margin:18px 0">
+        <h2 id="formTitle">Dodaj pytanie</h2>
+
+        <form id="questionForm">
+          <input type="hidden" id="editId">
+
+          <div class="two">
             <div class="field">
-              <label for="formQuestion">Treść pytania</label>
-              <textarea id="formQuestion" required placeholder="Wpisz pytanie"></textarea>
+              <label for="fGrade">Klasa</label>
+              <select id="fGrade"><option>中1</option><option>中2</option><option>中3</option></select>
             </div>
-
             <div class="field">
-              <label>Odpowiedzi (wpisz po jednej w każdym polu)</label>
-              <input id="option0" required placeholder="Odpowiedź A">
-              <input id="option1" required placeholder="Odpowiedź B" style="margin-top:8px">
-              <input id="option2" required placeholder="Odpowiedź C" style="margin-top:8px">
-              <input id="option3" required placeholder="Odpowiedź D" style="margin-top:8px">
-            </div>
-
-            <div class="two-col">
-              <div class="field">
-                <label for="formCorrect">Poprawna odpowiedź</label>
-                <select id="formCorrect">
-                  <option value="0">A</option><option value="1">B</option>
-                  <option value="2">C</option><option value="3">D</option>
-                </select>
-              </div>
-              <div class="field">
-                <label for="formExplanation">Wyjaśnienie (opcjonalnie)</label>
-                <input id="formExplanation" placeholder="Dlaczego ta odpowiedź jest poprawna?">
-              </div>
-            </div>
-
-            <div class="form-actions">
-              <button class="primary" type="submit" id="saveQuestionButton">Dodaj pytanie</button>
-              <button class="secondary hidden" type="button" id="cancelEditButton">Anuluj edycję</button>
-            </div>
-          </form>
-        </section>
-
-        <section class="card admin-card">
-          <h2>Bank pytań</h2>
-          <p class="help">Przesuwanie góra/dół zmienia kolejność pytań w tej kategorii.</p>
-
-          <div class="list-toolbar">
-            <div>
-              <label for="filterCategory">Filtr przedmiotu</label>
-              <select id="filterCategory"><option value="">Wszystkie przedmioty</option></select>
-            </div>
-            <div>
-              <label for="filterGrade">Filtr klasy</label>
-              <select id="filterGrade">
-                <option value="">Wszystkie klasy</option>
-                <option>中1</option><option>中2</option><option>中3</option>
-              </select>
+              <label for="fDifficulty">Trudność pytania</label>
+              <select id="fDifficulty"><option>Łatwy</option><option>Średni</option><option>Trudny</option></select>
             </div>
           </div>
 
-          <div class="question-list" id="questionList"></div>
-        </section>
-      </div>
-    </section>
-  </main>
+          <div class="two">
+            <div class="field">
+              <label for="fSubject">Przedmiot / kategoria</label>
+              <input id="fSubject" required placeholder="np. Matematyka">
+            </div>
+            <div class="field">
+              <label for="fTopic">Temat</label>
+              <input id="fTopic" required placeholder="np. Ułamki">
+            </div>
+          </div>
 
-  <script>
-    const STORAGE_KEY = "misjaOcalSzkole_v1";
+          <div class="field">
+            <label for="fType">Typ pytania</label>
+            <select id="fType">
+              <option value="single">Jedna odpowiedź z czterech</option>
+              <option value="multiple">Kilka poprawnych odpowiedzi</option>
+              <option value="boolean">Tak albo nie</option>
+              <option value="text">Wpisz odpowiedź</option>
+              <option value="word_order">Ułóż zdanie z rozsypanych słów</option>
+            </select>
+          </div>
 
-    const defaultQuestions = [
-      {
-        id: "q1", grade: "中1", subject: "Matematyka", topic: "Mnożenie",
-        difficulty: "Łatwy",
-        question: "Do remontu klasy potrzeba 8 puszek farby. Jedna kosztuje 12 zł. Ile kosztuje komplet?",
-        answers: ["20 zł", "86 zł", "96 zł", "108 zł"],
-        correct: 2, explanation: "8 × 12 zł = 96 zł."
-      },
-      {
-        id: "q2", grade: "中1", subject: "Angielski", topic: "Słownictwo",
-        difficulty: "Łatwy",
-        question: "Które angielskie słowo oznacza „biblioteka”?",
-        answers: ["Kitchen", "Library", "Garden", "Window"],
-        correct: 1, explanation: "„Library” oznacza bibliotekę."
-      },
-      {
-        id: "q3", grade: "中1", subject: "Nauki przyrodnicze", topic: "Energia",
-        difficulty: "Łatwy",
-        question: "Które źródło energii jest odnawialne?",
-        answers: ["Węgiel", "Ropa naftowa", "Energia słoneczna", "Gaz ziemny"],
-        correct: 2, explanation: "Energia słoneczna pochodzi ze źródła, które naturalnie się odnawia."
-      },
-      {
-        id: "q4", grade: "中2", subject: "Matematyka", topic: "Pole prostokąta",
-        difficulty: "Średni",
-        question: "Boisko ma 20 m długości i 10 m szerokości. Jakie jest jego pole?",
-        answers: ["30 m²", "60 m²", "200 m²", "400 m²"],
-        correct: 2, explanation: "Pole prostokąta to długość × szerokość: 20 × 10 = 200 m²."
-      },
-      {
-        id: "q5", grade: "中1", subject: "Język polski", topic: "Czasownik",
-        difficulty: "Łatwy",
-        question: "Wybierz poprawnie zapisane zdanie.",
-        answers: [
-          "Uczniowie odnawia szkołę.",
-          "Uczniowie odnawiają szkołę.",
-          "Uczniowie odnawiasz szkołę.",
-          "Uczniowie odnawiam szkołę."
-        ],
-        correct: 1, explanation: "Podmiot „uczniowie” wymaga formy „odnawiają”."
-      },
-      {
-        id: "q6", grade: "中2", subject: "Nauki przyrodnicze", topic: "Ekologia",
-        difficulty: "Średni",
-        question: "Co najlepiej zrobić, aby ograniczyć zużycie prądu w pustej klasie?",
-        answers: [
-          "Zostawić włączone światła",
-          "Włączyć dodatkowy grzejnik",
-          "Wyłączyć światła i urządzenia",
-          "Zostawić otwarte okna zimą"
-        ],
-        correct: 2, explanation: "Wyłączanie nieużywanych urządzeń pomaga oszczędzać energię."
-      },
-      {
-        id: "q7", grade: "中2", subject: "Wiedza o społeczeństwie", topic: "Współpraca",
-        difficulty: "Średni",
-        question: "Drużyna nie zgadza się, jaki kolor wybrać do klasy. Co będzie najlepszym rozwiązaniem?",
-        answers: [
-          "Nie słuchać nikogo",
-          "Omówić pomysły i wspólnie zagłosować",
-          "Zrezygnować z remontu",
-          "Pozwolić jednej osobie zdecydować bez rozmowy"
-        ],
-        correct: 1, explanation: "Rozmowa i głosowanie pomagają podjąć wspólną decyzję."
-      },
-      {
-        id: "q8", grade: "中1", subject: "Matematyka", topic: "Dzielenie",
-        difficulty: "Łatwy",
-        question: "Na półce było 36 książek. Ułożono je po równo na 4 półkach. Ile jest na każdej?",
-        answers: ["8", "9", "12", "32"],
-        correct: 1, explanation: "36 ÷ 4 = 9 książek na każdej półce."
-      },
-      {
-        id: "q9", grade: "中2", subject: "Angielski", topic: "Czasownik be",
-        difficulty: "Średni",
-        question: "Uzupełnij zdanie: “The students ___ in the classroom.”",
-        answers: ["is", "am", "are", "be"],
-        correct: 2, explanation: "Z „the students” używamy „are”."
-      },
-      {
-        id: "q10", grade: "中3", subject: "Nauki przyrodnicze", topic: "Ekosystem",
-        difficulty: "Trudny",
-        question: "Dlaczego różnorodność gatunków jest ważna dla ekosystemu?",
-        answers: [
-          "Zawsze zmniejsza ilość światła",
-          "Pomaga utrzymać równowagę i odporność ekosystemu",
-          "Sprawia, że nie potrzeba wody",
-          "Zatrzymuje wszystkie zmiany w przyrodzie"
-        ],
-        correct: 1, explanation: "Różne organizmy pełnią różne funkcje, co wspiera równowagę ekosystemu."
-      },
-      {
-        id: "q11", grade: "中3", subject: "Matematyka", topic: "Procenty",
-        difficulty: "Trudny",
-        question: "Szkoła kupiła 40 krzewów. 25% z nich posadzono przy wejściu. Ile to krzewów?",
-        answers: ["5", "8", "10", "15"],
-        correct: 2, explanation: "25% z 40 to 0,25 × 40 = 10."
-      },
-      {
-        id: "q12", grade: "中3", subject: "Język polski", topic: "Czytanie ze zrozumieniem",
-        difficulty: "Trudny",
-        question: "Które zdanie najlepiej przedstawia główną myśl tekstu o wspólnym remoncie szkoły?",
-        answers: [
-          "Współpraca pozwala połączyć umiejętności różnych osób.",
-          "Każdy powinien pracować wyłącznie sam.",
-          "Planowanie jest zawsze stratą czasu.",
-          "Naprawa szkoły zależy tylko od jednego ucznia."
-        ],
-        correct: 0, explanation: "Wspólna praca pozwala wykorzystać różne pomysły i umiejętności."
-      }
-    ];
+          <div class="field">
+            <label for="fQuestion">Treść pytania / polecenie</label>
+            <textarea id="fQuestion" required></textarea>
+          </div>
 
-    function loadData() {
-      try {
-        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
-        if (saved && Array.isArray(saved.questions) && saved.settings) return saved;
-      } catch (error) {
-        console.warn("Nie udało się odczytać zapisanych danych.", error);
-      }
-      return {
-        questions: structuredClone(defaultQuestions),
-        settings: { difficulty: "Łatwy" }
-      };
+          <div id="choiceFields" class="field">
+            <label>Odpowiedzi — zaznacz poprawną(e)</label>
+            <div id="optionsEditor"></div>
+            <p class="help" id="choiceHelp"></p>
+          </div>
+
+          <div id="booleanFields" class="field hidden">
+            <label for="fBoolean">Poprawna odpowiedź</label>
+            <select id="fBoolean"><option value="true">Tak</option><option value="false">Nie</option></select>
+          </div>
+
+          <div id="textFields" class="field hidden">
+            <label for="fAccepted">Akceptowane odpowiedzi, każda w osobnej linii</label>
+            <textarea id="fAccepted" placeholder="56&#10;pięćdziesiąt sześć"></textarea>
+          </div>
+
+          <div id="wordFields" class="field hidden">
+            <label for="fWords">Słowa do rozsypanki, każde w osobnej linii</label>
+            <textarea id="fWords" placeholder="I&#10;go&#10;to&#10;school&#10;every&#10;day"></textarea>
+            <label for="fSentence" style="margin-top:8px">Poprawne zdanie</label>
+            <input id="fSentence" placeholder="I go to school every day">
+          </div>
+
+          <div class="field">
+            <label for="fImage">Ścieżka ilustracji w repozytorium (opcjonalnie)</label>
+            <input id="fImage" placeholder="images/ulamek.png">
+            <p class="help">Najpierw dodaj obrazek do repozytorium, potem wpisz jego ścieżkę.</p>
+          </div>
+
+          <div class="field">
+            <label for="fImageAlt">Opis ilustracji dla dostępności (opcjonalnie)</label>
+            <input id="fImageAlt" placeholder="Krótki opis obrazka">
+          </div>
+
+          <div class="field">
+            <label for="fExplanation">Wyjaśnienie po odpowiedzi (opcjonalnie)</label>
+            <textarea id="fExplanation"></textarea>
+          </div>
+
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="primary" type="submit" id="saveQuestion">Dodaj pytanie</button>
+            <button class="secondary hidden" type="button" id="cancelEdit">Anuluj edycję</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="card admin-card">
+        <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center">
+          <h2 style="margin:0">Bank pytań</h2>
+          <button class="primary" id="exportButton" type="button">Przygotuj JSON</button>
+        </div>
+        <p class="help" id="exportStatus" style="margin:8px 0"></p>
+        <textarea id="exportText" class="export-box hidden" readonly
+          aria-label="Wyeksportowane pytania i ustawienia"></textarea>
+        <div class="two">
+          <div class="field">
+            <label for="filterSubject">Przedmiot</label>
+            <select id="filterSubject"><option value="">Wszystkie</option></select>
+          </div>
+          <div class="field">
+            <label for="filterGrade">Klasa</label>
+            <select id="filterGrade">
+              <option value="">Wszystkie</option><option>中1</option><option>中2</option><option>中3</option>
+            </select>
+          </div>
+        </div>
+        <div id="questionList"></div>
+      </section>
+    </div>
+  </section>
+</main>
+
+<script>
+"use strict";
+
+let data = { settings: { difficulty: "Łatwy" }, questions: [] };
+let game = [];
+let gameIndex = 0;
+let score = 0;
+let selected = null;
+let selectedMany = new Set();
+let wordTiles = [];
+let chosenTileIds = [];
+let answered = false;
+let editingId = null;
+
+const $ = id => document.getElementById(id);
+
+const goodReactions = [
+  ["🏅", "Wspaniała robota!"],
+  ["🌟", "Świetnie rozwiązane!"],
+  ["🎉", "Brawo, tak trzymaj!"],
+  ["🦊", "Bystry umysł!"],
+  ["👑", "Mistrz wiedzy!"],
+  ["🚀", "Lecisz po kolejne punkty!"]
+];
+
+const wrongReactions = [
+  ["😟", "Tym razem się nie udało."],
+  ["😢", "Ojej, spróbuj jeszcze raz."],
+  ["🙁", "Prawie! Następne pytanie przed Tobą."],
+  ["🫤", "Sprawdź wyjaśnienie i próbuj dalej."],
+  ["😕", "Każda pomyłka czegoś uczy."]
+];
+
+function esc(value) {
+  return String(value ?? "").replace(/[&<>"']/g, char => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+  })[char]);
+}
+
+function shuffle(items) {
+  const result = [...items];
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+  return result;
+}
+
+function typeLabel(type) {
+  return ({
+    single: "Jeden wybór",
+    multiple: "Wiele odpowiedzi",
+    boolean: "Tak albo nie",
+    text: "Wpisz odpowiedź",
+    word_order: "Ułóż zdanie"
+  })[type] || "Jeden wybór";
+}
+
+/* Pobiera pytania bezpośrednio z questions.json.
+   Nie wczytuje i nie zapisuje banku pytań w localStorage/sessionStorage. */
+async function loadData() {
+  const jsonUrl = new URL("./questions.json", window.location.href);
+  jsonUrl.searchParams.set("v", String(Date.now()));
+
+  try {
+    const response = await fetch(jsonUrl.toString(), { cache: "no-store" });
+    if (!response.ok) throw new Error(`Błąd HTTP ${response.status}`);
+
+    const loaded = await response.json();
+    if (!Array.isArray(loaded.questions) || !loaded.settings) {
+      throw new Error("Plik musi zawierać pola settings i questions.");
     }
 
-    let data = loadData();
-    let gameQuestions = [];
-    let gameIndex = 0;
-    let points = 0;
-    let schoolStage = 0;
-    let selectedAnswer = null;
-    let hasAnswered = false;
-    let editingId = null;
+    data = {
+      settings: { difficulty: loaded.settings.difficulty || "Łatwy" },
+      questions: loaded.questions
+    };
 
-    const $ = id => document.getElementById(id);
-
-    function saveData() {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-    }
-
-    function escapeHTML(value) {
-      return String(value ?? "").replace(/[&<>"']/g, char => ({
-        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;"
-      })[char]);
-    }
-
-    function shuffle(items) {
-      const result = [...items];
-      for (let i = result.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [result[i], result[j]] = [result[j], result[i]];
-      }
-      return result;
-    }
-
-    // Przełączanie paneli
-    document.querySelectorAll(".tab").forEach(button => {
-      button.addEventListener("click", () => {
-        document.querySelectorAll(".tab").forEach(tab => tab.classList.remove("active"));
-        document.querySelectorAll(".page").forEach(page => page.classList.remove("active"));
-        button.classList.add("active");
-        $(button.dataset.page).classList.add("active");
-        if (button.dataset.page === "adminPage") renderAdmin();
-      });
-    });
-
-    // Ustawienia trudności — zmienia je nauczyciel
     $("teacherDifficulty").value = data.settings.difficulty;
-    $("teacherDifficulty").addEventListener("change", event => {
-      data.settings.difficulty = event.target.value;
-      saveData();
-      updateDifficultyInfo();
-      updateStudentChoices();
-      renderAdmin();
-    });
-
-    function updateDifficultyInfo() {
-      $("difficultyInfo").textContent =
-        `Nauczyciel ustawił poziom: ${data.settings.difficulty}.`;
-    }
-
-    function updateStudentChoices() {
-      const grade = $("studentGrade").value;
-      const mode = $("questionMode").value;
-      const subjects = [...new Set(data.questions
-        .filter(q => q.grade === grade && q.difficulty === data.settings.difficulty)
-        .map(q => q.subject))].sort((a, b) => a.localeCompare(b, "pl"));
-
-      $("subjectField").classList.toggle("hidden", mode !== "single");
-
-      const oldSubject = $("studentSubject").value;
-      $("studentSubject").innerHTML = subjects.length
-        ? subjects.map(subject =>
-            `<option value="${escapeHTML(subject)}">${escapeHTML(subject)}</option>`).join("")
-        : `<option value="">Brak pytań</option>`;
-
-      if (subjects.includes(oldSubject)) $("studentSubject").value = oldSubject;
-
-      updateTopicChoices();
-      updateDifficultyInfo();
-    }
-
-    function updateTopicChoices() {
-      const grade = $("studentGrade").value;
-      const mode = $("questionMode").value;
-      const subject = $("studentSubject").value;
-      const topics = [...new Set(data.questions
-        .filter(q =>
-          q.grade === grade &&
-          q.difficulty === data.settings.difficulty &&
-          (mode !== "single" || q.subject === subject))
-        .map(q => q.topic))].sort((a, b) => a.localeCompare(b, "pl"));
-
-      const oldTopic = $("studentTopic").value;
-      $("studentTopic").innerHTML =
-        `<option value="">Wszystkie tematy</option>` +
-        topics.map(topic =>
-          `<option value="${escapeHTML(topic)}">${escapeHTML(topic)}</option>`).join("");
-
-      if (topics.includes(oldTopic)) $("studentTopic").value = oldTopic;
-    }
-
-    $("studentGrade").addEventListener("change", updateStudentChoices);
-    $("questionMode").addEventListener("change", updateStudentChoices);
-    $("studentSubject").addEventListener("change", updateTopicChoices);
-
-    // Start gry
-    $("startButton").addEventListener("click", () => {
-      const grade = $("studentGrade").value;
-      const mode = $("questionMode").value;
-      const subject = $("studentSubject").value;
-      const topic = $("studentTopic").value;
-
-      let matches = data.questions.filter(q =>
-        q.grade === grade &&
-        q.difficulty === data.settings.difficulty &&
-        (mode !== "single" || q.subject === subject) &&
-        (!topic || q.topic === topic)
-      );
-
-      if (!matches.length) {
-        alert("Brak pytań dla tego wyboru. Poproś nauczyciela o dodanie pytań albo wybierz inny temat.");
-        return;
-      }
-
-      gameQuestions = shuffle(matches);
-      gameIndex = 0;
-      points = 0;
-      schoolStage = 0;
-      $("score").textContent = "0";
-      updateSchool();
-
-      $("setupScreen").classList.add("hidden");
-      $("resultScreen").classList.add("hidden");
-      $("playScreen").classList.remove("hidden");
-      renderGameQuestion();
-    });
-
-    function renderGameQuestion() {
-      const q = gameQuestions[gameIndex];
-      selectedAnswer = null;
-      hasAnswered = false;
-
-      $("questionTag").textContent = `📘 ${q.subject} · ${q.topic}`;
-      $("questionCount").textContent = `Zadanie ${gameIndex + 1} z ${gameQuestions.length}`;
-      $("questionTitle").textContent = q.subject;
-      $("questionText").textContent = q.question;
-      $("feedback").textContent = "";
-      $("feedback").className = "feedback";
-      $("answerButton").textContent = "Sprawdź odpowiedź";
-      $("answerButton").disabled = true;
-      $("progressFill").style.width = `${Math.round(gameIndex / gameQuestions.length * 100)}%`;
-      $("progressPercent").textContent = `${Math.round(gameIndex / gameQuestions.length * 100)}%`;
-
-      $("answers").innerHTML = "";
-      q.answers.forEach((answer, index) => {
-        const button = document.createElement("button");
-        button.className = "answer";
-        button.type = "button";
-        button.textContent = answer;
-        button.addEventListener("click", () => {
-          if (hasAnswered) return;
-          selectedAnswer = index;
-          [...$("answers").children].forEach((item, itemIndex) =>
-            item.classList.toggle("selected", itemIndex === index));
-          $("answerButton").disabled = false;
-        });
-        $("answers").appendChild(button);
-      });
-    }
-
-    $("answerButton").addEventListener("click", () => {
-      if (!hasAnswered) {
-        checkGameAnswer();
-      } else if (gameIndex < gameQuestions.length - 1) {
-        gameIndex++;
-        renderGameQuestion();
-      } else {
-        finishGame();
-      }
-    });
-
-    function checkGameAnswer() {
-      if (selectedAnswer === null) return;
-      hasAnswered = true;
-
-      const q = gameQuestions[gameIndex];
-      const buttons = [...$("answers").children];
-      buttons.forEach(button => button.disabled = true);
-
-      if (selectedAnswer === q.correct) {
-        points++;
-        schoolStage = Math.min(5, schoolStage + 1);
-        $("score").textContent = points;
-        buttons[selectedAnswer].classList.add("correct");
-        $("feedback").textContent =
-          `Dobrze! Szkoła zyskuje kolejny etap remontu.${q.explanation ? " " + q.explanation : ""}`;
-        $("feedback").className = "feedback good";
-      } else {
-        schoolStage = Math.max(0, schoolStage - 1);
-        buttons[selectedAnswer].classList.add("incorrect");
-        buttons[q.correct].classList.add("correct");
-        $("feedback").textContent =
-          `Niepoprawna odpowiedź — szkoła cofa się o etap remontu.${q.explanation ? " " + q.explanation : ""}`;
-        $("feedback").className = "feedback bad";
-      }
-
-      updateSchool();
-      $("progressFill").style.width =
-        `${Math.round((gameIndex + 1) / gameQuestions.length * 100)}%`;
-      $("progressPercent").textContent =
-        `${Math.round((gameIndex + 1) / gameQuestions.length * 100)}%`;
-      $("answerButton").textContent =
-        gameIndex < gameQuestions.length - 1 ? "Następne pytanie" : "Zobacz wynik";
-      $("answerButton").disabled = false;
-    }
-
-    function updateSchool() {
-      const art = $("schoolArt");
-      art.classList.remove("stage-0", "stage-1", "stage-2", "stage-3", "stage-4", "stage-5");
-      art.classList.add(`stage-${schoolStage}`);
-
-      const stages = [
-        ["Szkoła potrzebuje pomocy!", "Budynek jest zniszczony. Każda dobra odpowiedź rozpoczyna naprawę."],
-        ["Zaczynamy porządki!", "Ubyło trochę gruzu. Uważajcie — błędna odpowiedź cofa postęp."],
-        ["Remont trwa!", "Pojawiły się narzędzia i rusztowania. Dobra robota!"],
-        ["Nowa elewacja!", "Szkoła odzyskuje kolory, a przy budynku pojawiają się pierwsze rośliny."],
-        ["Prawie gotowe!", "Okna lśnią, ogród zakwita, a uczniowie są coraz bliżej celu."],
-        ["Szkoła jak nowa!", "Wspaniała drużynowa praca — kampus został odnowiony!"]
-      ];
-
-      $("stageTitle").textContent = stages[schoolStage][0];
-      $("stageText").textContent = stages[schoolStage][1];
-    }
-
-    function finishGame() {
-      $("playScreen").classList.add("hidden");
-      $("resultScreen").classList.remove("hidden");
-
-      $("resultIcon").textContent = schoolStage === 5 ? "🏆" : schoolStage >= 3 ? "🌸" : "🛠️";
-      $("resultTitle").textContent = schoolStage === 5 ? "Szkoła odnowiona!" : "Misja zakończona!";
-      $("resultText").textContent =
-        `Zdobyto ${points} punktów z ${gameQuestions.length} pytań. ` +
-        `Końcowy stan szkoły: etap ${schoolStage} z 5.`;
-    }
-
-    $("againButton").addEventListener("click", () => {
-      $("resultScreen").classList.add("hidden");
-      $("setupScreen").classList.remove("hidden");
-      updateStudentChoices();
-    });
-
-    // PANEL NAUCZYCIELA
-    $("questionForm").addEventListener("submit", event => {
-      event.preventDefault();
-
-      const question = {
-        id: editingId || `q_${Date.now()}_${Math.random().toString(16).slice(2)}`,
-        grade: $("formGrade").value,
-        subject: $("formSubject").value.trim(),
-        topic: $("formTopic").value.trim(),
-        difficulty: $("formDifficulty").value,
-        question: $("formQuestion").value.trim(),
-        answers: [0, 1, 2, 3].map(i => $(`option${i}`).value.trim()),
-        correct: Number($("formCorrect").value),
-        explanation: $("formExplanation").value.trim()
-      };
-
-      if (editingId) {
-        const index = data.questions.findIndex(q => q.id === editingId);
-        if (index !== -1) data.questions[index] = question;
-      } else {
-        data.questions.push(question);
-      }
-
-      saveData();
-      clearQuestionForm();
-      renderAdmin();
-      updateStudentChoices();
-    });
-
-    function clearQuestionForm() {
-      editingId = null;
-      $("questionForm").reset();
-      $("editId").value = "";
-      $("formHeading").textContent = "Dodaj pytanie";
-      $("saveQuestionButton").textContent = "Dodaj pytanie";
-      $("cancelEditButton").classList.add("hidden");
-      $("formCorrect").value = "0";
-    }
-
-    $("cancelEditButton").addEventListener("click", clearQuestionForm);
-
-    function startEditing(questionId) {
-      const q = data.questions.find(item => item.id === questionId);
-      if (!q) return;
-
-      editingId = q.id;
-      $("editId").value = q.id;
-      $("formGrade").value = q.grade;
-      $("formSubject").value = q.subject;
-      $("formTopic").value = q.topic;
-      $("formDifficulty").value = q.difficulty;
-      $("formQuestion").value = q.question;
-      q.answers.forEach((answer, index) => $(`option${index}`).value = answer);
-      $("formCorrect").value = String(q.correct);
-      $("formExplanation").value = q.explanation || "";
-      $("formHeading").textContent = "Edytuj pytanie";
-      $("saveQuestionButton").textContent = "Zapisz zmiany";
-      $("cancelEditButton").classList.remove("hidden");
-      $("formHeading").scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-
-    function moveQuestion(questionId, direction) {
-      const currentIndex = data.questions.findIndex(q => q.id === questionId);
-      if (currentIndex === -1) return;
-
-      const current = data.questions[currentIndex];
-      const sameGroup = data.questions
-        .map((q, index) => ({ q, index }))
-        .filter(item =>
-          item.q.grade === current.grade &&
-          item.q.subject === current.subject &&
-          item.q.topic === current.topic &&
-          item.q.difficulty === current.difficulty
-        );
-
-      const position = sameGroup.findIndex(item => item.q.id === current.id);
-      const target = sameGroup[position + direction];
-      if (!target) return;
-
-      [data.questions[currentIndex], data.questions[target.index]] =
-        [data.questions[target.index], data.questions[currentIndex]];
-
-      saveData();
-      renderAdmin();
-    }
-
-    function deleteQuestion(questionId) {
-      const q = data.questions.find(item => item.id === questionId);
-      if (!q || !confirm(`Usunąć pytanie: „${q.question}”?`)) return;
-
-      data.questions = data.questions.filter(item => item.id !== questionId);
-      saveData();
-      renderAdmin();
-      updateStudentChoices();
-    }
-
-    $("filterCategory").addEventListener("change", renderQuestionList);
-    $("filterGrade").addEventListener("change", renderQuestionList);
-
-    function renderAdmin() {
-      $("teacherDifficulty").value = data.settings.difficulty;
-
-      const categories = [...new Set(data.questions.map(q => q.subject))]
-        .sort((a, b) => a.localeCompare(b, "pl"));
-      const oldFilter = $("filterCategory").value;
-      $("filterCategory").innerHTML =
-        `<option value="">Wszystkie przedmioty</option>` +
-        categories.map(category =>
-          `<option value="${escapeHTML(category)}">${escapeHTML(category)}</option>`).join("");
-      if (categories.includes(oldFilter)) $("filterCategory").value = oldFilter;
-
-      renderQuestionList();
-    }
-
-    function renderQuestionList() {
-      const category = $("filterCategory").value;
-      const grade = $("filterGrade").value;
-
-      const filtered = data.questions
-        .map((q, index) => ({ q, index }))
-        .filter(({ q }) =>
-          (!category || q.subject === category) &&
-          (!grade || q.grade === grade)
-        );
-
-      if (!filtered.length) {
-        $("questionList").innerHTML = `<p class="help">Brak pytań w tym widoku. Dodaj pytanie w formularzu.</p>`;
-        return;
-      }
-
-      $("questionList").innerHTML = filtered.map(({ q }) => `
-        <article class="question-item">
-          <div class="badges">
-            <span class="badge">${escapeHTML(q.grade)}</span>
-            <span class="badge">${escapeHTML(q.subject)}</span>
-            <span class="badge">${escapeHTML(q.topic)}</span>
-            <span class="badge">${escapeHTML(q.difficulty)}</span>
-          </div>
-          <p><strong>${escapeHTML(q.question)}</strong></p>
-          <p class="help">
-            A. ${escapeHTML(q.answers[0])}<br>
-            B. ${escapeHTML(q.answers[1])}<br>
-            C. ${escapeHTML(q.answers[2])}<br>
-            D. ${escapeHTML(q.answers[3])}
-          </p>
-          <p class="help">Poprawna: ${["A", "B", "C", "D"][q.correct]}${q.explanation ? " · " + escapeHTML(q.explanation) : ""}</p>
-          <div class="item-actions">
-            <button class="small-button" data-action="up" data-id="${escapeHTML(q.id)}" aria-label="Przesuń pytanie w górę">↑ Góra</button>
-            <button class="small-button" data-action="down" data-id="${escapeHTML(q.id)}" aria-label="Przesuń pytanie w dół">↓ Dół</button>
-            <button class="small-button" data-action="edit" data-id="${escapeHTML(q.id)}">Edytuj</button>
-            <button class="small-button" data-action="delete" data-id="${escapeHTML(q.id)}">Usuń</button>
-          </div>
-        </article>
-      `).join("");
-
-      $("questionList").querySelectorAll("button[data-action]").forEach(button => {
-        button.addEventListener("click", () => {
-          const id = button.dataset.id;
-          const action = button.dataset.action;
-          if (action === "edit") startEditing(id);
-          if (action === "delete") deleteQuestion(id);
-          if (action === "up") moveQuestion(id, -1);
-          if (action === "down") moveQuestion(id, 1);
-        });
-      });
-    }
-
-    updateStudentChoices();
+    refreshStudentFilters();
     renderAdmin();
-    updateSchool();
-  </script>
+    showStartVisual();
+  } catch (error) {
+    console.error(error);
+    $("setup").innerHTML =
+      `<div class="note"><strong>Nie udało się wczytać questions.json.</strong><br>` +
+      `Upewnij się, że oba pliki są w tym samym katalogu repozytorium i że strona jest otwarta przez GitHub Pages. ` +
+      `Szczegóły: ${esc(error.message)}</div>`;
+  }
+}
+
+/* Nawigacja między panelami */
+document.querySelectorAll(".tab").forEach(button => {
+  button.addEventListener("click", () => {
+    document.querySelectorAll(".tab").forEach(tab => tab.classList.remove("active"));
+    document.querySelectorAll(".page").forEach(page => page.classList.remove("active"));
+    button.classList.add("active");
+    $(button.dataset.page).classList.add("active");
+    if (button.dataset.page === "adminPage") renderAdmin();
+  });
+});
+
+/* Ustawienia nauczyciela */
+$("teacherDifficulty").addEventListener("change", event => {
+  data.settings.difficulty = event.target.value;
+  refreshStudentFilters();
+  renderAdmin();
+});
+
+function refreshStudentFilters() {
+  if (!$("grade")) return;
+
+  const grade = $("grade").value;
+  const singleSubject = $("mode").value === "single";
+
+  $("subjectField").classList.toggle("hidden", !singleSubject);
+
+  const eligible = data.questions.filter(question =>
+    question.grade === grade &&
+    question.difficulty === data.settings.difficulty
+  );
+
+  const subjects = [...new Set(eligible.map(question => question.subject))]
+    .sort((a, b) => a.localeCompare(b, "pl"));
+
+  const previousSubject = $("subject").value;
+  $("subject").innerHTML = subjects.map(subject =>
+    `<option value="${esc(subject)}">${esc(subject)}</option>`
+  ).join("");
+
+  if (subjects.includes(previousSubject)) $("subject").value = previousSubject;
+
+  const subject = $("subject").value;
+  const topicQuestions = eligible.filter(question =>
+    !singleSubject || question.subject === subject
+  );
+
+  const topics = [...new Set(topicQuestions.map(question => question.topic))]
+    .sort((a, b) => a.localeCompare(b, "pl"));
+
+  const previousTopic = $("topic").value;
+  $("topic").innerHTML =
+    `<option value="">Wszystkie tematy</option>` +
+    topics.map(topic => `<option value="${esc(topic)}">${esc(topic)}</option>`).join("");
+
+  if (topics.includes(previousTopic)) $("topic").value = previousTopic;
+
+  $("difficultyInfo").textContent =
+    `Poziom trudności ustawił nauczyciel: ${data.settings.difficulty}.`;
+}
+
+["grade", "mode", "subject"].forEach(id =>
+  $(id).addEventListener("change", refreshStudentFilters)
+);
+
+/* Start gry */
+$("start").addEventListener("click", () => {
+  const grade = $("grade").value;
+  const mode = $("mode").value;
+  const subject = $("subject").value;
+  const topic = $("topic").value;
+
+  game = shuffle(data.questions.filter(question =>
+    question.grade === grade &&
+    question.difficulty === data.settings.difficulty &&
+    (mode !== "single" || question.subject === subject) &&
+    (!topic || question.topic === topic)
+  ));
+
+  if (!game.length) {
+    alert("Brak pytań dla tego wyboru. Wybierz inny zakres albo dodaj pytania w panelu nauczyciela.");
+    return;
+  }
+
+  gameIndex = 0;
+  score = 0;
+  $("score").textContent = "0";
+  $("setup").classList.add("hidden");
+  $("result").classList.add("hidden");
+  $("play").classList.remove("hidden");
+  renderQuestion();
+});
+
+function showStartVisual() {
+  $("visual").innerHTML =
+    `<div class="visual-hint">Wybierz misję, aby rozpocząć.<br>` +
+    `Ilustracja pytania pokaże się tutaj, jeśli nauczyciel dodał ją do banku.</div>`;
+  $("visualTitle").textContent = "Twoja przygoda zaczyna się tutaj";
+  $("visualCaption").textContent = "Bez ilustracji gra pokaże odznakę albo reakcję emoji.";
+}
+
+function showQuestionVisual(question) {
+  if (!question.image) {
+    $("visual").innerHTML = `<div class="visual-hint">Po odpowiedzi pojawi się reakcja.</div>`;
+    $("visualTitle").textContent = "Jak pójdzie Ci tym razem?";
+    $("visualCaption").textContent = "Każda odpowiedź to kolejna okazja do nauki.";
+    return;
+  }
+
+  const image = document.createElement("img");
+  image.src = question.image;
+  image.alt = question.imageAlt || `Ilustracja do pytania: ${question.topic}`;
+  image.onerror = () => {
+    $("visual").innerHTML =
+      `<div class="visual-hint">Nie udało się wczytać ilustracji.<br>` +
+      `Sprawdź ścieżkę pliku: ${esc(question.image)}</div>`;
+  };
+  $("visual").replaceChildren(image);
+  $("visualTitle").textContent = "Ilustracja do pytania";
+  $("visualCaption").textContent = question.imageAlt || question.topic;
+}
+
+function renderQuestion() {
+  const question = game[gameIndex];
+  const type = question.type || "single";
+
+  selected = null;
+  selectedMany = new Set();
+  wordTiles = [];
+  chosenTileIds = [];
+  answered = false;
+
+  $("qTag").textContent = `${typeLabel(type)} · ${question.subject} · ${question.topic}`;
+  $("qCount").textContent = `Pytanie ${gameIndex + 1} z ${game.length}`;
+  $("percent").textContent = `${Math.round(gameIndex / game.length * 100)}%`;
+  $("fill").style.width = `${Math.round(gameIndex / game.length * 100)}%`;
+  $("qTitle").textContent = question.subject;
+  $("qText").textContent = question.question;
+  $("feedback").textContent = "";
+  $("feedback").className = "feedback";
+  $("answerButton").disabled = true;
+  $("answerButton").textContent = "Wybierz lub wpisz odpowiedź";
+  $("answers").innerHTML = "";
+
+  showQuestionVisual(question);
+
+  if (type === "word_order") renderWordOrder(question);
+  else if (type === "text") renderTextInput();
+  else if (type === "boolean") renderBoolean(question);
+  else renderChoice(question, type === "multiple");
+
+  updateAnswerReady();
+}
+
+function renderChoice(question, multiple) {
+  (question.answers || []).forEach((answer, index) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "answer";
+    button.textContent = answer;
+
+    button.addEventListener("click", () => {
+      if (answered) return;
+
+      if (multiple) {
+        if (selectedMany.has(index)) {
+          selectedMany.delete(index);
+          button.classList.remove("selected");
+        } else {
+          selectedMany.add(index);
+          button.classList.add("selected");
+        }
+      } else {
+        selected = index;
+        [...$("answers").children].forEach(item =>
+          item.classList.toggle("selected", item === button)
+        );
+      }
+      updateAnswerReady();
+    });
+
+    $("answers").appendChild(button);
+  });
+}
+
+function renderBoolean(question) {
+  [["Tak", true], ["Nie", false]].forEach(([label, value]) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "answer";
+    button.textContent = label;
+    button.addEventListener("click", () => {
+      if (answered) return;
+      selected = value;
+      [...$("answers").children].forEach(item =>
+        item.classList.toggle("selected", item === button)
+      );
+      updateAnswerReady();
+    });
+    $("answers").appendChild(button);
+  });
+}
+
+function renderTextInput() {
+  const input = document.createElement("input");
+  input.id = "typedAnswer";
+  input.type = "text";
+  input.autocomplete = "off";
+  input.placeholder = "Wpisz odpowiedź";
+  input.addEventListener("input", updateAnswerReady);
+  $("answers").appendChild(input);
+}
+
+function renderWordOrder(question) {
+  const instructions = document.createElement("p");
+  instructions.className = "help";
+  instructions.textContent = "Dotknij słów, aby ułożyć zdanie:";
+  $("answers").appendChild(instructions);
+
+  const zone = document.createElement("div");
+  zone.className = "word-zone";
+  zone.id = "wordZone";
+
+  const bank = document.createElement("div");
+  bank.className = "word-bank";
+  bank.id = "wordBank";
+
+  $("answers").append(zone, bank);
+
+  const tokens = question.words.map((text, index) => ({
+    id: `${question.id}-word-${index}`,
+    text
+  }));
+
+  const correctSentence = JSON.stringify(question.correctWords);
+  const key = `word-order-${question.id}`;
+  let previousOrder = "";
+
+  try {
+    previousOrder = sessionStorage.getItem(key) || "";
+  } catch (_) {}
+
+  let chosen = shuffle(tokens);
+
+  // Zapamiętujemy tylko poprzedni układ rozsypanki w tej karcie.
+  // Pytania i ustawienia nadal są zawsze pobierane z questions.json.
+  for (let attempt = 0; attempt < 80; attempt++) {
+    const candidate = shuffle(tokens);
+    const idOrder = candidate.map(token => token.id).join("|");
+    const sentence = JSON.stringify(candidate.map(token => token.text));
+
+    if (idOrder !== previousOrder && sentence !== correctSentence) {
+      chosen = candidate;
+      break;
+    }
+  }
+
+  wordTiles = chosen;
+
+  try {
+    sessionStorage.setItem(key, wordTiles.map(token => token.id).join("|"));
+  } catch (_) {}
+
+  drawWordTiles();
+}
+
+function drawWordTiles() {
+  const zone = $("wordZone");
+  const bank = $("wordBank");
+  if (!zone || !bank) return;
+
+  zone.innerHTML = "";
+  bank.innerHTML = "";
+
+  chosenTileIds.forEach(id => {
+    const tile = wordTiles.find(item => item.id === id);
+    if (!tile) return;
+    zone.appendChild(makeWordButton(tile, () => {
+      chosenTileIds = chosenTileIds.filter(chosenId => chosenId !== id);
+      drawWordTiles();
+      updateAnswerReady();
+    }));
+  });
+
+  wordTiles.filter(tile => !chosenTileIds.includes(tile.id)).forEach(tile => {
+    bank.appendChild(makeWordButton(tile, () => {
+      chosenTileIds.push(tile.id);
+      drawWordTiles();
+      updateAnswerReady();
+    }));
+  });
+}
+
+function makeWordButton(tile, onClick) {
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = "word";
+  button.textContent = tile.text;
+  button.addEventListener("click", onClick);
+  return button;
+}
+
+function updateAnswerReady() {
+  if (!game[gameIndex]) return;
+
+  const question = game[gameIndex];
+  const type = question.type || "single";
+  let ready = false;
+
+  if (type === "single" || type === "boolean") ready = selected !== null;
+  if (type === "multiple") ready = selectedMany.size > 0;
+  if (type === "text") ready = Boolean($("typedAnswer")?.value.trim());
+  if (type === "word_order") {
+    ready = chosenTileIds.length === question.correctWords.length;
+  }
+
+  $("answerButton").disabled = !ready;
+}
+
+function normalizeAnswer(value) {
+  return String(value ?? "")
+    .trim()
+    .toLocaleLowerCase("pl")
+    .replace(/[.!?,;:]+$/g, "")
+    .replace(/\s+/g, " ");
+}
+
+function isCorrect(question) {
+  const type = question.type || "single";
+
+  if (type === "single") return selected === question.correct;
+  if (type === "boolean") return selected === question.correctBoolean;
+
+  if (type === "text") {
+    const entered = normalizeAnswer($("typedAnswer").value);
+    return question.acceptedAnswers.some(answer =>
+      normalizeAnswer(answer) === entered
+    );
+  }
+
+  if (type === "word_order") {
+    const response = chosenTileIds.map(id =>
+      wordTiles.find(tile => tile.id === id)?.text
+    );
+    return JSON.stringify(response) === JSON.stringify(question.correctWords);
+  }
+
+  if (type === "multiple") {
+    const response = [...selectedMany].sort((a, b) => a - b);
+    const correct = [...question.correctAnswers].sort((a, b) => a - b);
+    return JSON.stringify(response) === JSON.stringify(correct);
+  }
+
+  return false;
+}
+
+$("answerButton").addEventListener("click", () => {
+  if (!answered) {
+    checkAnswer();
+  } else if (gameIndex < game.length - 1) {
+    gameIndex++;
+    renderQuestion();
+  } else {
+    finishGame();
+  }
+});
+
+function checkAnswer() {
+  const question = game[gameIndex];
+  const correct = isCorrect(question);
+  answered = true;
+
+  $("answers").querySelectorAll("button").forEach(button => {
+    button.disabled = true;
+  });
+
+  if (correct) {
+    score++;
+    $("score").textContent = String(score);
+    $("feedback").textContent =
+      `Dobrze! ${question.explanation || "Świetna odpowiedź."}`;
+    $("feedback").className = "feedback good";
+  } else {
+    $("feedback").textContent =
+      `Tym razem niepoprawnie. ${question.explanation || "Spróbuj zapamiętać tę wskazówkę."}`;
+    $("feedback").className = "feedback bad";
+  }
+
+  markCorrectAnswers(question);
+  if (!question.image) showReaction(correct);
+
+  $("fill").style.width = `${Math.round((gameIndex + 1) / game.length * 100)}%`;
+  $("percent").textContent = `${Math.round((gameIndex + 1) / game.length * 100)}%`;
+  $("answerButton").textContent =
+    gameIndex < game.length - 1 ? "Następne pytanie" : "Zobacz wynik";
+  $("answerButton").disabled = false;
+}
+
+function markCorrectAnswers(question) {
+  const type = question.type || "single";
+
+  if (type === "single") {
+    $("answers").children[question.correct]?.classList.add("correct");
+  } else if (type === "boolean") {
+    $("answers").children[question.correctBoolean ? 0 : 1]?.classList.add("correct");
+  } else if (type === "multiple") {
+    question.correctAnswers.forEach(index =>
+      $("answers").children[index]?.classList.add("correct")
+    );
+  }
+}
+
+function showReaction(correct) {
+  const options = correct ? goodReactions : wrongReactions;
+  const [emoji, message] = options[Math.floor(Math.random() * options.length)];
+
+  $("visual").innerHTML =
+    `<div class="reaction"><div class="emoji">${emoji}</div>` +
+    `<div class="badge">${esc(message)}</div></div>`;
+
+  $("visualTitle").textContent = correct ? "Odznaka zdobyta!" : "Następnym razem będzie lepiej";
+  $("visualCaption").textContent = correct
+    ? "Dobra odpowiedź — zdobywasz punkt."
+    : "Pomyłki są częścią nauki. Przeczytaj wyjaśnienie i próbuj dalej.";
+}
+
+function finishGame() {
+  $("play").classList.add("hidden");
+  $("result").classList.remove("hidden");
+
+  const percent = Math.round(score / game.length * 100);
+  $("resultEmoji").textContent = percent >= 80 ? "🏆" : percent >= 50 ? "🌟" : "💪";
+  $("resultTitle").textContent =
+    percent >= 80 ? "Fantastyczny wynik!" :
+    percent >= 50 ? "Dobra robota!" : "Trening czyni mistrza!";
+  $("resultText").textContent =
+    `Poprawne odpowiedzi: ${score} z ${game.length} (${percent}%).`;
+}
+
+$("again").addEventListener("click", () => {
+  $("result").classList.add("hidden");
+  $("setup").classList.remove("hidden");
+  showStartVisual();
+});
+
+/* Panel nauczyciela */
+function buildOptionEditor(answers = [], correctIndexes = [], multiple = false) {
+  $("optionsEditor").innerHTML = "";
+
+  for (let index = 0; index < 4; index++) {
+    const row = document.createElement("div");
+    row.className = "option-row";
+
+    const input = document.createElement("input");
+    input.placeholder = `Odpowiedź ${String.fromCharCode(65 + index)}`;
+    input.value = answers[index] || "";
+    input.dataset.option = String(index);
+
+    const label = document.createElement("label");
+    label.className = "correct-pick";
+
+    const marker = document.createElement("input");
+    marker.type = multiple ? "checkbox" : "radio";
+    marker.name = "correctOption";
+    marker.value = String(index);
+    marker.checked = correctIndexes.includes(index);
+
+    label.append(marker, document.createTextNode(" poprawna"));
+    row.append(input, label);
+    $("optionsEditor").appendChild(row);
+  }
+
+  $("choiceHelp").textContent = multiple
+    ? "Zaznacz wszystkie poprawne odpowiedzi."
+    : "Zaznacz jedną poprawną odpowiedź.";
+}
+
+function updateTypeFields(question = {}) {
+  const type = $("fType").value;
+
+  $("choiceFields").classList.toggle("hidden", !["single", "multiple"].includes(type));
+  $("booleanFields").classList.toggle("hidden", type !== "boolean");
+  $("textFields").classList.toggle("hidden", type !== "text");
+  $("wordFields").classList.toggle("hidden", type !== "word_order");
+
+  const correctIndexes = question.correctAnswers ||
+    (Number.isInteger(question.correct) ? [question.correct] : []);
+
+  buildOptionEditor(question.answers || [], correctIndexes, type === "multiple");
+
+  if (typeof question.correctBoolean === "boolean") {
+    $("fBoolean").value = String(question.correctBoolean);
+  }
+  $("fAccepted").value = (question.acceptedAnswers || []).join("\n");
+  $("fWords").value = (question.words || []).join("\n");
+  $("fSentence").value = (question.correctWords || []).join(" ");
+}
+
+$("fType").addEventListener("change", () => updateTypeFields());
+
+function getCheckedCorrectIndexes() {
+  return [...$("optionsEditor").querySelectorAll('input[type="checkbox"], input[type="radio"]')]
+    .filter(input => input.checked)
+    .map(input => Number(input.value));
+}
+
+$("questionForm").addEventListener("submit", event => {
+  event.preventDefault();
+
+  const type = $("fType").value;
+  const question = {
+    id: editingId || `q-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+    type,
+    grade: $("fGrade").value,
+    subject: $("fSubject").value.trim(),
+    topic: $("fTopic").value.trim(),
+    difficulty: $("fDifficulty").value,
+    question: $("fQuestion").value.trim(),
+    explanation: $("fExplanation").value.trim(),
+    image: $("fImage").value.trim(),
+    imageAlt: $("fImageAlt").value.trim()
+  };
+
+  if (type === "single" || type === "multiple") {
+    question.answers = [...$("optionsEditor").querySelectorAll("input[data-option]")]
+      .map(input => input.value.trim());
+
+    if (question.answers.some(answer => !answer)) {
+      alert("Wpisz wszystkie cztery odpowiedzi.");
+      return;
+    }
+
+    const indexes = getCheckedCorrectIndexes();
+    if (!indexes.length || (type === "single" && indexes.length !== 1)) {
+      alert(type === "single"
+        ? "Zaznacz jedną poprawną odpowiedź."
+        : "Zaznacz przynajmniej jedną poprawną odpowiedź.");
+      return;
+    }
+
+    if (type === "single") question.correct = indexes[0];
+    else question.correctAnswers = indexes;
+  }
+
+  if (type === "boolean") {
+    question.correctBoolean = $("fBoolean").value === "true";
+  }
+
+  if (type === "text") {
+    question.acceptedAnswers = $("fAccepted").value
+      .split("\n").map(answer => answer.trim()).filter(Boolean);
+    if (!question.acceptedAnswers.length) {
+      alert("Wpisz przynajmniej jedną akceptowaną odpowiedź.");
+      return;
+    }
+  }
+
+  if (type === "word_order") {
+    question.words = $("fWords").value
+      .split("\n").map(word => word.trim()).filter(Boolean);
+    question.correctWords = $("fSentence").value
+      .trim().split(/\s+/).filter(Boolean);
+
+    if (question.words.length < 2 || !question.correctWords.length) {
+      alert("Dodaj przynajmniej dwa słowa i poprawne zdanie.");
+      return;
+    }
+  }
+
+  if (editingId) {
+    const index = data.questions.findIndex(item => item.id === editingId);
+    if (index !== -1) data.questions[index] = question;
+  } else {
+    data.questions.push(question);
+  }
+
+  resetForm();
+  renderAdmin();
+  refreshStudentFilters();
+});
+
+function resetForm() {
+  editingId = null;
+  $("questionForm").reset();
+  $("editId").value = "";
+  $("formTitle").textContent = "Dodaj pytanie";
+  $("saveQuestion").textContent = "Dodaj pytanie";
+  $("cancelEdit").classList.add("hidden");
+  updateTypeFields();
+}
+
+$("cancelEdit").addEventListener("click", resetForm);
+
+function editQuestion(id) {
+  const question = data.questions.find(item => item.id === id);
+  if (!question) return;
+
+  editingId = id;
+  $("editId").value = id;
+  $("formTitle").textContent = "Edytuj pytanie";
+  $("saveQuestion").textContent = "Zapisz zmiany";
+  $("cancelEdit").classList.remove("hidden");
+
+  $("fGrade").value = question.grade;
+  $("fSubject").value = question.subject;
+  $("fTopic").value = question.topic;
+  $("fDifficulty").value = question.difficulty;
+  $("fType").value = question.type || "single";
+  $("fQuestion").value = question.question;
+  $("fExplanation").value = question.explanation || "";
+  $("fImage").value = question.image || "";
+  $("fImageAlt").value = question.imageAlt || "";
+
+  updateTypeFields(question);
+  $("formTitle").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function deleteQuestion(id) {
+  const question = data.questions.find(item => item.id === id);
+  if (!question || !confirm("Usunąć to pytanie?")) return;
+
+  data.questions = data.questions.filter(item => item.id !== id);
+  renderAdmin();
+  refreshStudentFilters();
+}
+
+function moveQuestion(id, direction) {
+  const index = data.questions.findIndex(item => item.id === id);
+  if (index < 0) return;
+
+  const current = data.questions[index];
+  const group = data.questions
+    .map((question, originalIndex) => ({ question, originalIndex }))
+    .filter(item =>
+      item.question.grade === current.grade &&
+      item.question.subject === current.subject &&
+      item.question.topic === current.topic &&
+      item.question.difficulty === current.difficulty
+    );
+
+  const position = group.findIndex(item => item.question.id === id);
+  const target = group[position + direction];
+  if (!target) return;
+
+  [data.questions[index], data.questions[target.originalIndex]] =
+    [data.questions[target.originalIndex], data.questions[index]];
+
+  renderAdmin();
+}
+
+$("filterSubject").addEventListener("change", renderQuestionList);
+$("filterGrade").addEventListener("change", renderQuestionList);
+
+function renderAdmin() {
+  $("teacherDifficulty").value = data.settings.difficulty;
+
+  const oldSubject = $("filterSubject").value;
+  const subjects = [...new Set(data.questions.map(question => question.subject))]
+    .sort((a, b) => a.localeCompare(b, "pl"));
+
+  $("filterSubject").innerHTML =
+    `<option value="">Wszystkie</option>` +
+    subjects.map(subject => `<option value="${esc(subject)}">${esc(subject)}</option>`).join("");
+
+  if (subjects.includes(oldSubject)) $("filterSubject").value = oldSubject;
+
+  renderQuestionList();
+}
+
+function renderQuestionList() {
+  const subject = $("filterSubject").value;
+  const grade = $("filterGrade").value;
+
+  const questions = data.questions.filter(question =>
+    (!subject || question.subject === subject) &&
+    (!grade || question.grade === grade)
+  );
+
+  if (!questions.length) {
+    $("questionList").innerHTML = `<p class="help">Brak pytań dla tego filtra.</p>`;
+    return;
+  }
+
+  $("questionList").innerHTML = questions.map(question => `
+    <article class="item">
+      <div class="badges">
+        <span class="badge-chip">${esc(question.grade)}</span>
+        <span class="badge-chip">${esc(question.subject)}</span>
+        <span class="badge-chip">${esc(question.topic)}</span>
+        <span class="badge-chip">${esc(question.difficulty)}</span>
+        <span class="badge-chip">${esc(typeLabel(question.type || "single"))}</span>
+        ${question.image ? `<span class="badge-chip">ma ilustrację</span>` : ""}
+      </div>
+      <p><strong>${esc(question.question)}</strong></p>
+      <div class="item-actions">
+        <button class="small" data-action="up" data-id="${esc(question.id)}">↑ Góra</button>
+        <button class="small" data-action="down" data-id="${esc(question.id)}">↓ Dół</button>
+        <button class="small" data-action="edit" data-id="${esc(question.id)}">Edytuj</button>
+        <button class="danger" data-action="delete" data-id="${esc(question.id)}">Usuń</button>
+      </div>
+    </article>
+  `).join("");
+
+  $("questionList").querySelectorAll("[data-action]").forEach(button => {
+    button.addEventListener("click", () => {
+      const id = button.dataset.id;
+      const action = button.dataset.action;
+
+      if (action === "edit") editQuestion(id);
+      if (action === "delete") deleteQuestion(id);
+      if (action === "up") moveQuestion(id, -1);
+      if (action === "down") moveQuestion(id, 1);
+    });
+  });
+}
+
+/* Eksport obejmuje aktualne pytania oraz trudność nauczyciela. */
+$("exportButton").addEventListener("click", async () => {
+  const json = JSON.stringify({
+    settings: data.settings,
+    questions: data.questions
+  }, null, 2);
+
+  $("exportText").value = json;
+  $("exportText").classList.remove("hidden");
+
+  try {
+    await navigator.clipboard.writeText(json);
+    $("exportStatus").textContent =
+      "Skopiowano JSON. Wklej go do questions.json na GitHubie i zatwierdź zmianę.";
+  } catch (_) {
+    $("exportText").focus();
+    $("exportText").select();
+    $("exportStatus").textContent =
+      "Zaznaczony JSON jest gotowy do skopiowania. Wklej go do questions.json na GitHubie.";
+  }
+});
+
+updateTypeFields();
+loadData();
+</script>
 </body>
 </html>
