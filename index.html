@@ -1,355 +1,1311 @@
 <!doctype html>
-<html lang="en">
+<html lang="pl">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#f3f5ff">
-<title>Knowledge Quest</title>
+<title>Misja: Mistrzowie wiedzy</title>
 <style>
-:root{--ink:#232b45;--muted:#69738b;--blue:#5268d7;--line:#e4e8f2;--good:#218258;--bad:#b63e50}
-*{box-sizing:border-box}
-body{margin:0;padding:16px;background:linear-gradient(145deg,#eff2ff,#eff8f1);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
-button,input,select{font:inherit}button{touch-action:manipulation;cursor:pointer}
-.app{width:min(1080px,100%);margin:auto}
-header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}
-.brand{display:flex;align-items:center;gap:11px}.logo{width:48px;height:48px;display:grid;place-items:center;background:#fff;border-radius:15px;font-size:26px}
-h1{font-size:clamp(1.2rem,4vw,1.8rem);margin:0 0 3px}.muted{color:var(--muted);line-height:1.5}
-.score{background:#fff;border:1px solid var(--line);border-radius:99px;padding:10px 14px;font-weight:800;white-space:nowrap}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.card{background:#fff;border:1px solid #e7eaf2;border-radius:20px;box-shadow:0 12px 34px #24315b12;overflow:hidden}
-.visual{min-height:290px;display:grid;place-items:center;padding:20px;background:radial-gradient(circle,#fff,#edf0ff)}
-.visual img{max-width:100%;max-height:360px;object-fit:contain;border-radius:14px}
-.reaction{text-align:center;animation:pop .35s ease}.emoji{font-size:clamp(80px,14vw,140px)}.badge{font-weight:900;color:#634bba}
-@keyframes pop{0%{transform:scale(.5);opacity:.4}75%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
-.caption,.panel{padding:18px}.caption strong{display:block}.tag{display:inline-block;padding:7px 10px;border-radius:99px;background:#eef0ff;color:#4156b9;font-weight:800;margin-bottom:12px}
-.field{margin:12px 0}.field label{display:block;font-weight:750;margin-bottom:5px}
-input,select{width:100%;min-height:43px;padding:9px 11px;border:1px solid #d8deea;border-radius:11px;background:white;color:var(--ink)}
-.primary{width:100%;border:0;border-radius:11px;padding:12px;background:var(--blue);color:#fff;font-weight:800}
-.primary:disabled{background:#e6e9f1;color:#8790a4}
-.hidden{display:none!important}.progressline{display:flex;justify-content:space-between;color:var(--muted);font-size:.9rem;margin:10px 0}
-.track{height:9px;background:#eaedf4;border-radius:99px;overflow:hidden;margin-bottom:18px}.fill{height:100%;background:#48a773;width:0}
-.qtitle{margin:0 0 8px;font-size:1.35rem}.answers{display:grid;gap:9px}
-.answer{min-height:48px;text-align:left;padding:10px 13px;border:2px solid var(--line);border-radius:12px;background:#fff;color:var(--ink)}
-.answer.selected{border-color:var(--blue);background:#f1f3ff}
-.answer.correct{border-color:#61b88b;background:#effaf4}
-.answer:disabled{cursor:default}
-.feedback{min-height:44px;margin:12px 0;color:var(--muted);line-height:1.45}.good{color:var(--good)}.bad{color:var(--bad)}
-.word-zone{min-height:52px;padding:7px;border:2px dashed #cbd2e3;border-radius:12px;margin:8px 0;display:flex;flex-wrap:wrap;gap:6px}
-.word-bank{display:flex;flex-wrap:wrap;gap:7px}.word{border:1px solid #cfd6e6;border-radius:10px;background:#fff;padding:9px 12px}
-.result{text-align:center}.result .emoji{font-size:70px}
-@media(max-width:760px){.grid{grid-template-columns:1fr}.visual{min-height:220px}}
-@media(max-width:480px){body{padding:10px}.logo{width:42px;height:42px}.score{padding:9px}}
+:root {
+  --ink: #232b45;
+  --muted: #69738b;
+  --blue: #5268d7;
+  --line: #e4e8f2;
+  --good: #218258;
+  --bad: #b63e50;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  padding: 16px;
+  background: linear-gradient(145deg, #eff2ff, #eff8f1);
+  color: var(--ink);
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+button, input, select, textarea { font: inherit; }
+button { touch-action: manipulation; cursor: pointer; }
+.app { width: min(1120px, 100%); margin: auto; }
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.brand { display: flex; align-items: center; gap: 11px; }
+.logo {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  background: #fff;
+  border-radius: 15px;
+  box-shadow: 0 7px 24px #24315b16;
+  font-size: 26px;
+}
+h1 { font-size: clamp(1.25rem, 4vw, 1.8rem); margin: 0 0 3px; }
+.subtitle, .help { color: var(--muted); margin: 0; line-height: 1.5; }
+.score {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 99px;
+  padding: 10px 14px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+.tabs {
+  display: flex;
+  gap: 7px;
+  padding: 6px;
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  background: #ffffffc9;
+  margin-bottom: 15px;
+}
+.tab {
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-weight: 750;
+}
+.tab.active { background: var(--blue); color: white; }
+.page { display: none; }
+.page.active { display: block; }
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.card {
+  background: #fff;
+  border: 1px solid #e7eaf2;
+  border-radius: 21px;
+  box-shadow: 0 12px 34px #24315b12;
+  overflow: hidden;
+}
+.visual {
+  min-height: 330px;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: radial-gradient(circle at 50% 40%, #fff 0, #f4f6ff 68%, #e8edff 100%);
+}
+.visual img {
+  max-width: 100%;
+  max-height: 390px;
+  object-fit: contain;
+  border-radius: 15px;
+}
+.reaction { text-align: center; animation: pop .35s ease; }
+.reaction .emoji { font-size: clamp(78px, 13vw, 145px); line-height: 1.1; }
+.reaction .badge { font-weight: 900; color: #634bba; margin-top: 7px; font-size: 1.08rem; }
+.visual-hint { color: var(--muted); text-align: center; padding: 16px; }
+@keyframes pop {
+  0% { transform: scale(.5); opacity: .4; }
+  75% { transform: scale(1.1); }
+  100% { transform: scale(1); opacity: 1; }
+}
+.caption { padding: 14px 18px 17px; }
+.caption strong { display: block; margin-bottom: 4px; }
+.panel { padding: clamp(18px, 3vw, 28px); }
+.tag {
+  display: inline-block;
+  padding: 7px 10px;
+  border-radius: 99px;
+  background: #eef0ff;
+  color: #4156b9;
+  font-size: .83rem;
+  font-weight: 800;
+  margin-bottom: 12px;
+}
+.field { margin: 12px 0; }
+.field label { display: block; font-weight: 750; margin-bottom: 5px; }
+input, select, textarea {
+  width: 100%;
+  min-height: 43px;
+  padding: 9px 11px;
+  border: 1px solid #d8deea;
+  border-radius: 11px;
+  background: white;
+  color: var(--ink);
+}
+textarea { min-height: 75px; resize: vertical; }
+input:focus, select:focus, textarea:focus {
+  outline: 3px solid #5268d72b;
+  border-color: var(--blue);
+}
+.primary, .secondary, .danger, .small {
+  border: 0;
+  border-radius: 11px;
+  font-weight: 800;
+  padding: 10px 13px;
+  min-height: 42px;
+}
+.primary { background: var(--blue); color: white; }
+.primary:hover { background: #4055c2; }
+.primary:disabled { background: #e6e9f1; color: #8790a4; cursor: not-allowed; }
+.secondary, .small { background: #edf0f7; color: var(--ink); }
+.danger { background: #fff0f2; color: #9f3040; }
+.full { width: 100%; }
+.hidden { display: none !important; }
+.progressline {
+  display: flex;
+  justify-content: space-between;
+  color: var(--muted);
+  font-size: .9rem;
+  font-weight: 700;
+  margin: 9px 0 7px;
+}
+.track {
+  height: 9px;
+  border-radius: 99px;
+  background: #eaedf4;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+.fill {
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg, #7fc895, #34895e);
+  transition: width .25s;
+}
+.qtitle { margin: 0 0 8px; font-size: 1.35rem; }
+.qtext { color: #515d75; line-height: 1.5; margin: 0 0 16px; }
+.answers { display: grid; gap: 9px; }
+.answer {
+  min-height: 49px;
+  text-align: left;
+  padding: 10px 13px;
+  border: 2px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+  color: var(--ink);
+}
+.answer.selected { border-color: var(--blue); background: #f1f3ff; }
+.answer.correct { border-color: #61b88b; background: #effaf4; }
+.answer.wrong { border-color: #df8490; background: #fff0f2; }
+.answer:disabled { cursor: default; }
+.feedback { min-height: 43px; margin: 12px 0 8px; line-height: 1.45; color: var(--muted); }
+.feedback.good { color: var(--good); }
+.feedback.bad { color: var(--bad); }
+.word-zone {
+  min-height: 54px;
+  padding: 7px;
+  border: 2px dashed #cbd2e3;
+  border-radius: 12px;
+  margin: 8px 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.word-bank { display: flex; flex-wrap: wrap; gap: 7px; }
+.word {
+  width: auto;
+  min-height: 43px;
+  padding: 8px 12px;
+  border: 1px solid #cfd6e6;
+  border-radius: 11px;
+  background: #fff;
+}
+.admin-grid {
+  display: grid;
+  grid-template-columns: minmax(280px, .8fr) 1.2fr;
+  gap: 16px;
+}
+.admin-card { padding: 19px; }
+.admin-card h2 { margin: 0 0 12px; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.option-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  margin: 7px 0;
+  align-items: center;
+}
+.correct-pick { display: flex; align-items: center; gap: 5px; white-space: nowrap; font-size: .86rem; }
+.correct-pick input { width: 18px; min-height: 18px; }
+.item { border: 1px solid var(--line); background: #fdfdff; border-radius: 13px; padding: 12px; margin: 9px 0; }
+.badges { display: flex; flex-wrap: wrap; gap: 5px; }
+.badge-chip { font-size: .75rem; font-weight: 750; background: #edf0f7; color: #505b75; padding: 4px 8px; border-radius: 99px; }
+.item p { line-height: 1.4; }
+.item-actions { display: flex; flex-wrap: wrap; gap: 6px; }
+.note {
+  margin: 12px 0;
+  padding: 11px 13px;
+  border-radius: 11px;
+  background: #fff8e3;
+  color: #68541e;
+  line-height: 1.45;
+  font-size: .9rem;
+}
+.export-box { min-height: 120px; font-family: ui-monospace, monospace; font-size: .83rem; }
+.result { text-align: center; padding: 20px 0; }
+.result .emoji { font-size: 70px; }
+.result h2 { margin: 5px 0; }
+.result p { color: var(--muted); line-height: 1.5; }
+@media (max-width: 780px) {
+  .grid, .admin-grid { grid-template-columns: 1fr; }
+  .visual { min-height: 230px; }
+}
+@media (max-width: 500px) {
+  body { padding: 10px; }
+  .tabs { display: grid; grid-template-columns: 1fr 1fr; }
+  .tab { padding: 9px 6px; }
+  .two { grid-template-columns: 1fr; }
+  .logo { width: 42px; height: 42px; }
+  .score { padding: 9px; }
+}
 </style>
 </head>
+
 <body>
 <main class="app">
-<header>
-  <div class="brand"><div class="logo">🎒</div><div><h1 id="title"></h1><div class="muted" id="subtitle"></div></div></div>
-  <div class="score"><span id="scoreLabel"></span> <span id="score">0</span></div>
-</header>
-<div class="grid">
-  <section class="card">
-    <div class="visual" id="visual" aria-live="polite"></div>
-    <div class="caption"><strong id="visualTitle"></strong><span class="muted" id="visualCaption"></span></div>
+  <header>
+    <div class="brand">
+      <div class="logo" aria-hidden="true">🎒</div>
+      <div>
+        <h1>Misja: Mistrzowie wiedzy</h1>
+        <p class="subtitle">Ucz się, zdobywaj odznaki i baw się dobrze.</p>
+      </div>
+    </div>
+    <div class="score">⭐ Punkty: <span id="score">0</span></div>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab active" data-page="studentPage">Panel ucznia</button>
+    <button class="tab" data-page="adminPage">Panel nauczyciela</button>
+  </nav>
+
+  <section id="studentPage" class="page active">
+    <div class="grid">
+      <section class="card">
+        <div class="visual" id="visual" aria-live="polite">
+          <div class="visual-hint">Wybierz misję, aby rozpocząć.</div>
+        </div>
+        <div class="caption">
+          <strong id="visualTitle">Twoja przygoda zaczyna się tutaj</strong>
+          <span id="visualCaption" class="help">Ilustracje pytań pokażą się tutaj.</span>
+        </div>
+      </section>
+
+      <section class="card panel">
+        <div id="setup">
+          <span class="tag">🎒 Panel ucznia</span>
+          <h2 class="qtitle">Wybierz zestaw pytań</h2>
+          <p class="help">Poziom trudności ustala nauczyciel.</p>
+
+          <div class="field">
+            <label for="grade">Klasa</label>
+            <select id="grade">
+              <option>中1</option><option>中2</option><option>中3</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="mode">Rodzaj zestawu</label>
+            <select id="mode">
+              <option value="mixed">Mieszany — różne przedmioty</option>
+              <option value="single">Jeden przedmiot</option>
+            </select>
+          </div>
+          <div class="field hidden" id="subjectField">
+            <label for="subject">Przedmiot</label>
+            <select id="subject"></select>
+          </div>
+          <div class="field">
+            <label for="topic">Temat</label>
+            <select id="topic"><option value="">Wszystkie tematy</option></select>
+          </div>
+          <p class="help" id="difficultyInfo"></p>
+          <button class="primary full" id="start">Rozpocznij grę</button>
+        </div>
+
+        <div id="play" class="hidden" aria-live="polite">
+          <span class="tag" id="qTag">📘 Pytanie</span>
+          <div class="progressline"><span id="qCount"></span><span id="percent"></span></div>
+          <div class="track"><div class="fill" id="fill"></div></div>
+          <h2 class="qtitle" id="qTitle"></h2>
+          <p class="qtext" id="qText"></p>
+          <div class="answers" id="answers"></div>
+          <p class="feedback" id="feedback"></p>
+          <button class="primary full" id="answerButton" disabled>Wybierz odpowiedź</button>
+        </div>
+
+        <div id="result" class="result hidden">
+          <div class="emoji" id="resultEmoji"></div>
+          <h2 id="resultTitle"></h2>
+          <p id="resultText"></p>
+          <button class="primary full" id="again">Zagraj ponownie</button>
+        </div>
+      </section>
+    </div>
   </section>
-  <section class="card panel">
-    <div id="setup">
-      <span class="tag" id="studentTag"></span>
-      <h2 class="qtitle" id="setupTitle"></h2>
-      <p class="muted" id="setupHelp"></p>
-      <div class="field"><label id="classLabel" for="classSelect"></label><select id="classSelect"></select></div>
-      <div class="field"><label id="modeLabel" for="mode"></label>
-        <select id="mode"><option value="mixed"></option><option value="single"></option></select></div>
-      <div class="field hidden" id="subjectField"><label id="subjectLabel" for="subject"></label><select id="subject"></select></div>
-      <div class="field"><label id="topicLabel" for="topic"></label><select id="topic"></select></div>
-      <p class="muted" id="difficultyInfo"></p>
-      <button class="primary" id="start"></button>
+
+  <section id="adminPage" class="page">
+    <div class="note">
+      <strong>Źródłem danych jest plik `questions.json` na GitHubie.</strong>
+      Zmiany w panelu są tymczasowe: skopiuj eksportowany JSON, wklej go do pliku
+      `questions.json` w repozytorium i zatwierdź zmianę. GitHub Pages nie może
+      samodzielnie zapisywać do repozytorium.
     </div>
-    <div id="play" class="hidden" aria-live="polite">
-      <span class="tag" id="qTag"></span>
-      <div class="progressline"><span id="qCount"></span><span id="percent"></span></div>
-      <div class="track"><div class="fill" id="fill"></div></div>
-      <h2 class="qtitle" id="qTitle"></h2><p class="muted" id="qText"></p>
-      <div class="answers" id="answers"></div>
-      <p class="feedback" id="feedback"></p>
-      <button class="primary" id="answerButton" disabled></button>
-    </div>
-    <div id="result" class="result hidden">
-      <div class="emoji" id="resultEmoji"></div><h2 id="resultTitle"></h2>
-      <p class="muted" id="resultText"></p><button class="primary" id="again"></button>
+
+    <div class="admin-grid">
+      <section class="card admin-card">
+        <h2>Ustawienia i pytanie</h2>
+
+        <div class="field">
+          <label for="teacherDifficulty">Poziom trudności dla uczniów</label>
+          <select id="teacherDifficulty">
+            <option>Łatwy</option><option>Średni</option><option>Trudny</option>
+          </select>
+        </div>
+
+        <hr style="border:0;border-top:1px solid #e4e8f2;margin:18px 0">
+        <h2 id="formTitle">Dodaj pytanie</h2>
+
+        <form id="questionForm">
+          <input type="hidden" id="editId">
+
+          <div class="two">
+            <div class="field">
+              <label for="fGrade">Klasa</label>
+              <select id="fGrade"><option>中1</option><option>中2</option><option>中3</option></select>
+            </div>
+            <div class="field">
+              <label for="fDifficulty">Trudność pytania</label>
+              <select id="fDifficulty"><option>Łatwy</option><option>Średni</option><option>Trudny</option></select>
+            </div>
+          </div>
+
+          <div class="two">
+            <div class="field">
+              <label for="fSubject">Przedmiot / kategoria</label>
+              <input id="fSubject" required placeholder="np. Matematyka">
+            </div>
+            <div class="field">
+              <label for="fTopic">Temat</label>
+              <input id="fTopic" required placeholder="np. Ułamki">
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="fType">Typ pytania</label>
+            <select id="fType">
+              <option value="single">Jedna odpowiedź z czterech</option>
+              <option value="multiple">Kilka poprawnych odpowiedzi</option>
+              <option value="boolean">Tak albo nie</option>
+              <option value="text">Wpisz odpowiedź</option>
+              <option value="word_order">Ułóż zdanie z rozsypanych słów</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="fQuestion">Treść pytania / polecenie</label>
+            <textarea id="fQuestion" required></textarea>
+          </div>
+
+          <div id="choiceFields" class="field">
+            <label>Odpowiedzi — zaznacz poprawną(e)</label>
+            <div id="optionsEditor"></div>
+            <p class="help" id="choiceHelp"></p>
+          </div>
+
+          <div id="booleanFields" class="field hidden">
+            <label for="fBoolean">Poprawna odpowiedź</label>
+            <select id="fBoolean"><option value="true">Tak</option><option value="false">Nie</option></select>
+          </div>
+
+          <div id="textFields" class="field hidden">
+            <label for="fAccepted">Akceptowane odpowiedzi, każda w osobnej linii</label>
+            <textarea id="fAccepted" placeholder="56&#10;pięćdziesiąt sześć"></textarea>
+          </div>
+
+          <div id="wordFields" class="field hidden">
+            <label for="fWords">Słowa do rozsypanki, każde w osobnej linii</label>
+            <textarea id="fWords" placeholder="I&#10;go&#10;to&#10;school&#10;every&#10;day"></textarea>
+            <label for="fSentence" style="margin-top:8px">Poprawne zdanie</label>
+            <input id="fSentence" placeholder="I go to school every day">
+          </div>
+
+          <div class="field">
+            <label for="fImage">Ścieżka ilustracji w repozytorium (opcjonalnie)</label>
+            <input id="fImage" placeholder="images/ulamek.png">
+            <p class="help">Najpierw dodaj obrazek do repozytorium, potem wpisz jego ścieżkę.</p>
+          </div>
+
+          <div class="field">
+            <label for="fImageAlt">Opis ilustracji dla dostępności (opcjonalnie)</label>
+            <input id="fImageAlt" placeholder="Krótki opis obrazka">
+          </div>
+
+          <div class="field">
+            <label for="fExplanation">Wyjaśnienie po odpowiedzi (opcjonalnie)</label>
+            <textarea id="fExplanation"></textarea>
+          </div>
+
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="primary" type="submit" id="saveQuestion">Dodaj pytanie</button>
+            <button class="secondary hidden" type="button" id="cancelEdit">Anuluj edycję</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="card admin-card">
+        <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center">
+          <h2 style="margin:0">Bank pytań</h2>
+          <button class="primary" id="exportButton" type="button">Przygotuj JSON</button>
+        </div>
+        <p class="help" id="exportStatus" style="margin:8px 0"></p>
+        <textarea id="exportText" class="export-box hidden" readonly
+          aria-label="Wyeksportowane pytania i ustawienia"></textarea>
+        <div class="two">
+          <div class="field">
+            <label for="filterSubject">Przedmiot</label>
+            <select id="filterSubject"><option value="">Wszystkie</option></select>
+          </div>
+          <div class="field">
+            <label for="filterGrade">Klasa</label>
+            <select id="filterGrade">
+              <option value="">Wszystkie</option><option>中1</option><option>中2</option><option>中3</option>
+            </select>
+          </div>
+        </div>
+        <div id="questionList"></div>
+      </section>
     </div>
   </section>
-</div>
 </main>
 
 <script>
-const LANG = (() => {
-  const n = (navigator.languages?.[0] || navigator.language || "en").toLowerCase();
-  if (n.startsWith("pl")) return "pl";
-  if (n.startsWith("ja")) return "ja";
-  return "en";
-})();
+"use strict";
 
-const UI = {
-  en: {
-    title:"Knowledge Quest", subtitle:"Learn, earn badges, and have fun.",
-    score:"Points:", student:"Student panel", setup:"Choose your question set",
-    setupHelp:"The teacher chooses the difficulty.", class:"Class", mode:"Question set",
-    mixed:"Mixed subjects", single:"One subject", subject:"Subject", topic:"Topic",
-    allTopics:"All topics", start:"Start game", difficulty:"Teacher-set difficulty:",
-    question:"Question", of:"of", choose:"Choose or enter an answer",
-    check:"Check answer", next:"Next question", result:"See results", again:"Play again",
-    yes:"Yes", no:"No", typeWord:"Tap words to build the sentence:",
-    enter:"Type your answer", image:"Question illustration",
-    correct:"Correct! ", wrong:"Not quite. ", earned:"Badge earned!",
-    tryAgain:"Keep learning!", correctMsg:"Great answer — you earned a point.",
-    wrongMsg:"Mistakes are part of learning. Read the explanation and keep going.",
-    noQuestions:"No questions match this choice. Ask your teacher to add some.",
-    finished:"Correct answers:", excellent:"Excellent result!", good:"Well done!", practice:"Practice makes progress!",
-    noImage:"Choose a mission to begin. If a question has an illustration, it will appear here.",
-    missingImage:"Could not load the illustration. Check its path in questions.json.",
-    one:"One answer", many:"Multiple answers", boolean:"Yes or no", text:"Type the answer", words:"Build the sentence",
-    chooseClass:"Choose a class", className:"Class"
-  },
-  pl: {
-    title:"Misja: Mistrzowie wiedzy", subtitle:"Ucz się, zdobywaj odznaki i baw się dobrze.",
-    score:"Punkty:", student:"Panel ucznia", setup:"Wybierz zestaw pytań",
-    setupHelp:"Poziom trudności ustala nauczyciel.", class:"Klasa", mode:"Rodzaj zestawu",
-    mixed:"Zestaw mieszany", single:"Jeden przedmiot", subject:"Przedmiot", topic:"Temat",
-    allTopics:"Wszystkie tematy", start:"Rozpocznij grę", difficulty:"Poziom ustalony przez nauczyciela:",
-    question:"Pytanie", of:"z", choose:"Wybierz lub wpisz odpowiedź",
-    check:"Sprawdź odpowiedź", next:"Następne pytanie", result:"Zobacz wynik", again:"Zagraj ponownie",
-    yes:"Tak", no:"Nie", typeWord:"Dotknij słów, aby ułożyć zdanie:",
-    enter:"Wpisz odpowiedź", image:"Ilustracja do pytania",
-    correct:"Dobrze! ", wrong:"Tym razem niepoprawnie. ", earned:"Odznaka zdobyta!",
-    tryAgain:"Następnym razem będzie lepiej!", correctMsg:"Dobra odpowiedź — zdobywasz punkt.",
-    wrongMsg:"Pomyłki są częścią nauki. Przeczytaj wyjaśnienie i próbuj dalej.",
-    noQuestions:"Brak pytań dla tego wyboru. Poproś nauczyciela o dodanie pytań.",
-    finished:"Poprawne odpowiedzi:", excellent:"Fantastyczny wynik!", good:"Dobra robota!", practice:"Trening czyni mistrza!",
-    noImage:"Wybierz misję, aby rozpocząć. Ilustracja pytania pokaże się tutaj, jeśli została dodana.",
-    missingImage:"Nie udało się wczytać ilustracji. Sprawdź ścieżkę w questions.json.",
-    one:"Jedna odpowiedź", many:"Wiele odpowiedzi", boolean:"Tak albo nie", text:"Wpisz odpowiedź", words:"Ułóż zdanie",
-    chooseClass:"Wybierz klasę", className:"Klasa"
-  },
-  ja: {
-    title:"知識クエスト", subtitle:"学んで、バッジを集めて、楽しもう。",
-    score:"ポイント:", student:"生徒パネル", setup:"問題セットを選んでください",
-    setupHelp:"難易度は先生が設定します。", class:"クラス", mode:"問題セット",
-    mixed:"複数科目", single:"1つの科目", subject:"科目", topic:"テーマ",
-    allTopics:"すべてのテーマ", start:"ゲーム開始", difficulty:"先生が設定した難易度:",
-    question:"問題", of:"/", choose:"答えを選ぶか入力してください",
-    check:"答えを確認", next:"次の問題", result:"結果を見る", again:"もう一度遊ぶ",
-    yes:"はい", no:"いいえ", typeWord:"単語をタップして文を作りましょう：",
-    enter:"答えを入力", image:"問題のイラスト",
-    correct:"正解！", wrong:"今回は不正解です。", earned:"バッジを獲得！",
-    tryAgain:"次はきっとうまくいくよ！", correctMsg:"正解です。ポイントを獲得しました。",
-    wrongMsg:"間違いも学びの一部です。解説を読んで続けましょう。",
-    noQuestions:"この条件に合う問題がありません。先生に問題の追加をお願いしてください。",
-    finished:"正解数:", excellent:"すばらしい結果！", good:"よくできました！", practice:"練習を続けよう！",
-    noImage:"ミッションを選んで始めましょう。問題にイラストがあればここに表示されます。",
-    missingImage:"イラストを読み込めません。questions.json のパスを確認してください。",
-    one:"1つ選択", many:"複数選択", boolean:"はい・いいえ", text:"答えを入力", words:"文を作る",
-    chooseClass:"クラスを選択", className:"クラス"
-  }
-}[LANG];
+let data = { settings: { difficulty: "Łatwy" }, questions: [] };
+let game = [];
+let gameIndex = 0;
+let score = 0;
+let selected = null;
+let selectedMany = new Set();
+let wordTiles = [];
+let chosenTileIds = [];
+let answered = false;
+let editingId = null;
 
 const $ = id => document.getElementById(id);
-let data, questions=[], index=0, score=0, selected=null, multi=new Set(), tiles=[], chosen=[], answered=false;
 
-function loc(value) {
-  if (typeof value === "string") return value;
-  return value?.[LANG] || value?.en || value?.pl || "";
-}
-function shuffle(a) {
-  a=[...a];
-  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}
-  return a;
-}
-function say(id) { return UI[id] || id; }
-function initUI() {
-  document.documentElement.lang=LANG;
-  $("title").textContent=say("title");
-  $("subtitle").textContent=say("subtitle");
-  $("scoreLabel").textContent=say("score");
-  $("studentTag").textContent="🎒 "+say("student");
-  $("setupTitle").textContent=say("setup");
-  $("setupHelp").textContent=say("setupHelp");
-  $("classLabel").textContent=say("class");
-  $("modeLabel").textContent=say("mode");
-  $("mode").options[0].textContent=say("mixed");
-  $("mode").options[1].textContent=say("single");
-  $("subjectLabel").textContent=say("subject");
-  $("topicLabel").textContent=say("topic");
-  $("start").textContent=say("start");
-  $("again").textContent=say("again");
-  $("visualTitle").textContent=say("title");
-  $("visualCaption").textContent=say("noImage");
-}
-function className(c) { return loc(c.names) || c.id; }
+const goodReactions = [
+  ["🏅", "Wspaniała robota!"],
+  ["🌟", "Świetnie rozwiązane!"],
+  ["🎉", "Brawo, tak trzymaj!"],
+  ["🦊", "Bystry umysł!"],
+  ["👑", "Mistrz wiedzy!"],
+  ["🚀", "Lecisz po kolejne punkty!"]
+];
 
+const wrongReactions = [
+  ["😟", "Tym razem się nie udało."],
+  ["😢", "Ojej, spróbuj jeszcze raz."],
+  ["🙁", "Prawie! Następne pytanie przed Tobą."],
+  ["🫤", "Sprawdź wyjaśnienie i próbuj dalej."],
+  ["😕", "Każda pomyłka czegoś uczy."]
+];
+
+function esc(value) {
+  return String(value ?? "").replace(/[&<>"']/g, char => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+  })[char]);
+}
+
+function shuffle(items) {
+  const result = [...items];
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+  return result;
+}
+
+function typeLabel(type) {
+  return ({
+    single: "Jeden wybór",
+    multiple: "Wiele odpowiedzi",
+    boolean: "Tak albo nie",
+    text: "Wpisz odpowiedź",
+    word_order: "Ułóż zdanie"
+  })[type] || "Jeden wybór";
+}
+
+/* Pobiera pytania bezpośrednio z questions.json.
+   Nie wczytuje i nie zapisuje banku pytań w localStorage/sessionStorage. */
 async function loadData() {
-  initUI();
+  const jsonUrl = new URL("./questions.json", window.location.href);
+  jsonUrl.searchParams.set("v", String(Date.now()));
+
   try {
-    const url=new URL("./questions.json",location.href);
-    url.searchParams.set("v",Date.now());
-    const response=await fetch(url,{cache:"no-store"});
-    if(!response.ok) throw new Error("HTTP "+response.status);
-    data=await response.json();
-    if(!Array.isArray(data.questions)||!Array.isArray(data.classes)) throw new Error("Invalid JSON structure");
-    fillFilters();
-  } catch(error) {
-    $("setup").innerHTML=`<p class="muted">Could not load questions.json. Check that it is in the same GitHub folder as index.html. / Nie udało się wczytać questions.json. / questions.json を読み込めません。</p>`;
+    const response = await fetch(jsonUrl.toString(), { cache: "no-store" });
+    if (!response.ok) throw new Error(`Błąd HTTP ${response.status}`);
+
+    const loaded = await response.json();
+    if (!Array.isArray(loaded.questions) || !loaded.settings) {
+      throw new Error("Plik musi zawierać pola settings i questions.");
+    }
+
+    data = {
+      settings: { difficulty: loaded.settings.difficulty || "Łatwy" },
+      questions: loaded.questions
+    };
+
+    $("teacherDifficulty").value = data.settings.difficulty;
+    refreshStudentFilters();
+    renderAdmin();
+    showStartVisual();
+  } catch (error) {
+    console.error(error);
+    $("setup").innerHTML =
+      `<div class="note"><strong>Nie udało się wczytać questions.json.</strong><br>` +
+      `Upewnij się, że oba pliki są w tym samym katalogu repozytorium i że strona jest otwarta przez GitHub Pages. ` +
+      `Szczegóły: ${esc(error.message)}</div>`;
   }
 }
-function fillFilters() {
-  const classes=data.classes;
-  $("classSelect").innerHTML=classes.map(c=>`<option value="${c.id}">${escapeHtml(className(c))}</option>`).join("");
-  $("difficultyInfo").textContent=say("difficulty")+" "+(data.settings?.difficulty||"Easy");
-  updateSubjects();
-}
-function updateSubjects() {
-  const classId=$("classSelect").value;
-  const single=$("mode").value==="single";
-  $("subjectField").classList.toggle("hidden",!single);
-  const qs=data.questions.filter(q=>q.classId===classId&&q.difficulty===(data.settings?.difficulty||"Easy"));
-  const subjects=[...new Set(qs.map(q=>loc(q.subject)))];
-  $("subject").innerHTML=subjects.map(s=>`<option>${escapeHtml(s)}</option>`).join("");
-  updateTopics();
-}
-function updateTopics() {
-  const classId=$("classSelect").value, single=$("mode").value==="single", subject=$("subject").value;
-  const qs=data.questions.filter(q=>q.classId===classId&&q.difficulty===(data.settings?.difficulty||"Easy")&&(!single||loc(q.subject)===subject));
-  const topics=[...new Set(qs.map(q=>loc(q.topic)))];
-  $("topic").innerHTML=`<option value="">${say("allTopics")}</option>`+topics.map(t=>`<option>${escapeHtml(t)}</option>`).join("");
-}
-$("classSelect").addEventListener("change",updateSubjects);
-$("mode").addEventListener("change",updateSubjects);
-$("subject").addEventListener("change",updateTopics);
 
-$("start").addEventListener("click",()=>{
-  const classId=$("classSelect").value, single=$("mode").value==="single";
-  const subject=$("subject").value, topic=$("topic").value;
-  questions=shuffle(data.questions.filter(q=>
-    q.classId===classId&&q.difficulty===(data.settings?.difficulty||"Easy")&&
-    (!single||loc(q.subject)===subject)&&(!topic||loc(q.topic)===topic)
+/* Nawigacja między panelami */
+document.querySelectorAll(".tab").forEach(button => {
+  button.addEventListener("click", () => {
+    document.querySelectorAll(".tab").forEach(tab => tab.classList.remove("active"));
+    document.querySelectorAll(".page").forEach(page => page.classList.remove("active"));
+    button.classList.add("active");
+    $(button.dataset.page).classList.add("active");
+    if (button.dataset.page === "adminPage") renderAdmin();
+  });
+});
+
+/* Ustawienia nauczyciela */
+$("teacherDifficulty").addEventListener("change", event => {
+  data.settings.difficulty = event.target.value;
+  refreshStudentFilters();
+  renderAdmin();
+});
+
+function refreshStudentFilters() {
+  if (!$("grade")) return;
+
+  const grade = $("grade").value;
+  const singleSubject = $("mode").value === "single";
+
+  $("subjectField").classList.toggle("hidden", !singleSubject);
+
+  const eligible = data.questions.filter(question =>
+    question.grade === grade &&
+    question.difficulty === data.settings.difficulty
+  );
+
+  const subjects = [...new Set(eligible.map(question => question.subject))]
+    .sort((a, b) => a.localeCompare(b, "pl"));
+
+  const previousSubject = $("subject").value;
+  $("subject").innerHTML = subjects.map(subject =>
+    `<option value="${esc(subject)}">${esc(subject)}</option>`
+  ).join("");
+
+  if (subjects.includes(previousSubject)) $("subject").value = previousSubject;
+
+  const subject = $("subject").value;
+  const topicQuestions = eligible.filter(question =>
+    !singleSubject || question.subject === subject
+  );
+
+  const topics = [...new Set(topicQuestions.map(question => question.topic))]
+    .sort((a, b) => a.localeCompare(b, "pl"));
+
+  const previousTopic = $("topic").value;
+  $("topic").innerHTML =
+    `<option value="">Wszystkie tematy</option>` +
+    topics.map(topic => `<option value="${esc(topic)}">${esc(topic)}</option>`).join("");
+
+  if (topics.includes(previousTopic)) $("topic").value = previousTopic;
+
+  $("difficultyInfo").textContent =
+    `Poziom trudności ustawił nauczyciel: ${data.settings.difficulty}.`;
+}
+
+["grade", "mode", "subject"].forEach(id =>
+  $(id).addEventListener("change", refreshStudentFilters)
+);
+
+/* Start gry */
+$("start").addEventListener("click", () => {
+  const grade = $("grade").value;
+  const mode = $("mode").value;
+  const subject = $("subject").value;
+  const topic = $("topic").value;
+
+  game = shuffle(data.questions.filter(question =>
+    question.grade === grade &&
+    question.difficulty === data.settings.difficulty &&
+    (mode !== "single" || question.subject === subject) &&
+    (!topic || question.topic === topic)
   ));
-  if(!questions.length){alert(say("noQuestions"));return}
-  index=0;score=0;$("score").textContent="0";
-  $("setup").classList.add("hidden");$("result").classList.add("hidden");$("play").classList.remove("hidden");
+
+  if (!game.length) {
+    alert("Brak pytań dla tego wyboru. Wybierz inny zakres albo dodaj pytania w panelu nauczyciela.");
+    return;
+  }
+
+  gameIndex = 0;
+  score = 0;
+  $("score").textContent = "0";
+  $("setup").classList.add("hidden");
+  $("result").classList.add("hidden");
+  $("play").classList.remove("hidden");
   renderQuestion();
 });
 
-function renderQuestion() {
-  const q=questions[index],type=q.type||"single";
-  selected=null;multi=new Set();chosen=[];tiles=[];answered=false;
-  $("qTag").textContent=typeLabel(type)+" · "+loc(q.subject)+" · "+loc(q.topic);
-  $("qCount").textContent=`${say("question")} ${index+1} ${say("of")} ${questions.length}`;
-  $("percent").textContent=Math.round(index/questions.length*100)+"%";
-  $("fill").style.width=Math.round(index/questions.length*100)+"%";
-  $("qTitle").textContent=loc(q.subject);
-  $("qText").textContent=loc(q.question);
-  $("answers").innerHTML="";$("feedback").textContent="";$("answerButton").disabled=true;
-  $("answerButton").textContent=say("choose");
-  showQuestionImage(q);
+function showStartVisual() {
+  $("visual").innerHTML =
+    `<div class="visual-hint">Wybierz misję, aby rozpocząć.<br>` +
+    `Ilustracja pytania pokaże się tutaj, jeśli nauczyciel dodał ją do banku.</div>`;
+  $("visualTitle").textContent = "Twoja przygoda zaczyna się tutaj";
+  $("visualCaption").textContent = "Bez ilustracji gra pokaże odznakę albo reakcję emoji.";
+}
 
-  if(type==="word_order") renderWords(q);
-  else if(type==="text") {
-    const input=document.createElement("input");input.id="typed";input.placeholder=say("enter");
-    input.addEventListener("input",ready);$("answers").append(input);
-  } else if(type==="boolean") {
-    [true,false].forEach(value=>addAnswer(value?say("yes"):say("no"),()=>{selected=value;markSelection();ready()}));
-  } else {
-    (q.answers?.[LANG]||q.answers?.en||q.answers?.pl||[]).forEach((text,i)=>{
-      addAnswer(text,button=>{
-        if(type==="multiple"){multi.has(i)?multi.delete(i):multi.add(i);button.classList.toggle("selected")}
-        else {selected=i;markSelection(button)}
-        ready();
-      });
-    });
+function showQuestionVisual(question) {
+  if (!question.image) {
+    $("visual").innerHTML = `<div class="visual-hint">Po odpowiedzi pojawi się reakcja.</div>`;
+    $("visualTitle").textContent = "Jak pójdzie Ci tym razem?";
+    $("visualCaption").textContent = "Każda odpowiedź to kolejna okazja do nauki.";
+    return;
   }
-  ready();
+
+  const image = document.createElement("img");
+  image.src = question.image;
+  image.alt = question.imageAlt || `Ilustracja do pytania: ${question.topic}`;
+  image.onerror = () => {
+    $("visual").innerHTML =
+      `<div class="visual-hint">Nie udało się wczytać ilustracji.<br>` +
+      `Sprawdź ścieżkę pliku: ${esc(question.image)}</div>`;
+  };
+  $("visual").replaceChildren(image);
+  $("visualTitle").textContent = "Ilustracja do pytania";
+  $("visualCaption").textContent = question.imageAlt || question.topic;
 }
-function typeLabel(type){return say(({single:"one",multiple:"many",boolean:"boolean",text:"text",word_order:"words"})[type]||"one")}
-function addAnswer(text,callback) {
-  const b=document.createElement("button");b.type="button";b.className="answer";b.textContent=text;
-  b.addEventListener("click",()=>{if(!answered)callback(b)});$("answers").appendChild(b);
+
+function renderQuestion() {
+  const question = game[gameIndex];
+  const type = question.type || "single";
+
+  selected = null;
+  selectedMany = new Set();
+  wordTiles = [];
+  chosenTileIds = [];
+  answered = false;
+
+  $("qTag").textContent = `${typeLabel(type)} · ${question.subject} · ${question.topic}`;
+  $("qCount").textContent = `Pytanie ${gameIndex + 1} z ${game.length}`;
+  $("percent").textContent = `${Math.round(gameIndex / game.length * 100)}%`;
+  $("fill").style.width = `${Math.round(gameIndex / game.length * 100)}%`;
+  $("qTitle").textContent = question.subject;
+  $("qText").textContent = question.question;
+  $("feedback").textContent = "";
+  $("feedback").className = "feedback";
+  $("answerButton").disabled = true;
+  $("answerButton").textContent = "Wybierz lub wpisz odpowiedź";
+  $("answers").innerHTML = "";
+
+  showQuestionVisual(question);
+
+  if (type === "word_order") renderWordOrder(question);
+  else if (type === "text") renderTextInput();
+  else if (type === "boolean") renderBoolean(question);
+  else renderChoice(question, type === "multiple");
+
+  updateAnswerReady();
 }
-function markSelection(button) {
-  [...$("answers").querySelectorAll(".answer")].forEach(b=>b.classList.toggle("selected",b===button));
+
+function renderChoice(question, multiple) {
+  (question.answers || []).forEach((answer, index) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "answer";
+    button.textContent = answer;
+
+    button.addEventListener("click", () => {
+      if (answered) return;
+
+      if (multiple) {
+        if (selectedMany.has(index)) {
+          selectedMany.delete(index);
+          button.classList.remove("selected");
+        } else {
+          selectedMany.add(index);
+          button.classList.add("selected");
+        }
+      } else {
+        selected = index;
+        [...$("answers").children].forEach(item =>
+          item.classList.toggle("selected", item === button)
+        );
+      }
+      updateAnswerReady();
+    });
+
+    $("answers").appendChild(button);
+  });
 }
-function renderWords(q) {
-  const words=q.words?.[LANG]||q.words?.en||q.words?.pl||[];
-  tiles=shuffle(words.map((text,i)=>({id:String(i),text})));
-  const zone=document.createElement("div");zone.className="word-zone";zone.id="wordZone";
-  const bank=document.createElement("div");bank.className="word-bank";bank.id="wordBank";
-  const help=document.createElement("p");help.className="muted";help.textContent=say("typeWord");
-  $("answers").append(help,zone,bank);
-  drawWords();
+
+function renderBoolean(question) {
+  [["Tak", true], ["Nie", false]].forEach(([label, value]) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "answer";
+    button.textContent = label;
+    button.addEventListener("click", () => {
+      if (answered) return;
+      selected = value;
+      [...$("answers").children].forEach(item =>
+        item.classList.toggle("selected", item === button)
+      );
+      updateAnswerReady();
+    });
+    $("answers").appendChild(button);
+  });
 }
-function drawWords() {
-  const zone=$("wordZone"),bank=$("wordBank");if(!zone||!bank)return;
-  zone.innerHTML="";bank.innerHTML="";
-  chosen.forEach(id=>{const item=tiles.find(t=>t.id===id);zone.append(wordButton(item,()=>{chosen=chosen.filter(x=>x!==id);drawWords();ready()}))});
-  tiles.filter(t=>!chosen.includes(t.id)).forEach(item=>bank.append(wordButton(item,()=>{chosen.push(item.id);drawWords();ready()})));
+
+function renderTextInput() {
+  const input = document.createElement("input");
+  input.id = "typedAnswer";
+  input.type = "text";
+  input.autocomplete = "off";
+  input.placeholder = "Wpisz odpowiedź";
+  input.addEventListener("input", updateAnswerReady);
+  $("answers").appendChild(input);
 }
-function wordButton(item,fn){const b=document.createElement("button");b.className="word";b.type="button";b.textContent=item.text;b.onclick=fn;return b}
-function ready() {
-  const q=questions[index],type=q.type||"single";
-  const ok=type==="text"?Boolean($("typed")?.value.trim()):type==="word_order"?chosen.length===(q.correctWords?.[LANG]||q.correctWords?.en||q.correctWords?.pl||[]).length:type==="multiple"?multi.size>0:selected!==null;
-  $("answerButton").disabled=!ok;
+
+function renderWordOrder(question) {
+  const instructions = document.createElement("p");
+  instructions.className = "help";
+  instructions.textContent = "Dotknij słów, aby ułożyć zdanie:";
+  $("answers").appendChild(instructions);
+
+  const zone = document.createElement("div");
+  zone.className = "word-zone";
+  zone.id = "wordZone";
+
+  const bank = document.createElement("div");
+  bank.className = "word-bank";
+  bank.id = "wordBank";
+
+  $("answers").append(zone, bank);
+
+  const tokens = question.words.map((text, index) => ({
+    id: `${question.id}-word-${index}`,
+    text
+  }));
+
+  const correctSentence = JSON.stringify(question.correctWords);
+  const key = `word-order-${question.id}`;
+  let previousOrder = "";
+
+  try {
+    previousOrder = sessionStorage.getItem(key) || "";
+  } catch (_) {}
+
+  let chosen = shuffle(tokens);
+
+  // Zapamiętujemy tylko poprzedni układ rozsypanki w tej karcie.
+  // Pytania i ustawienia nadal są zawsze pobierane z questions.json.
+  for (let attempt = 0; attempt < 80; attempt++) {
+    const candidate = shuffle(tokens);
+    const idOrder = candidate.map(token => token.id).join("|");
+    const sentence = JSON.stringify(candidate.map(token => token.text));
+
+    if (idOrder !== previousOrder && sentence !== correctSentence) {
+      chosen = candidate;
+      break;
+    }
+  }
+
+  wordTiles = chosen;
+
+  try {
+    sessionStorage.setItem(key, wordTiles.map(token => token.id).join("|"));
+  } catch (_) {}
+
+  drawWordTiles();
 }
-function normalize(s){return String(s).trim().toLocaleLowerCase(LANG).replace(/[.!?,;:]+$/g,"").replace(/\s+/g," ")}
-function check(q) {
-  const type=q.type||"single";
-  if(type==="single")return selected===q.correct;
-  if(type==="boolean")return selected===q.correctBoolean;
-  if(type==="multiple")return JSON.stringify([...multi].sort())===JSON.stringify([...q.correctAnswers].sort());
-  if(type==="text")return (q.acceptedAnswers?.[LANG]||q.acceptedAnswers?.en||q.acceptedAnswers?.pl||[]).some(a=>normalize(a)===normalize($("typed").value));
-  const expected=q.correctWords?.[LANG]||q.correctWords?.en||q.correctWords?.pl||[];
-  return JSON.stringify(chosen.map(id=>tiles.find(t=>t.id===id).text))===JSON.stringify(expected);
+
+function drawWordTiles() {
+  const zone = $("wordZone");
+  const bank = $("wordBank");
+  if (!zone || !bank) return;
+
+  zone.innerHTML = "";
+  bank.innerHTML = "";
+
+  chosenTileIds.forEach(id => {
+    const tile = wordTiles.find(item => item.id === id);
+    if (!tile) return;
+    zone.appendChild(makeWordButton(tile, () => {
+      chosenTileIds = chosenTileIds.filter(chosenId => chosenId !== id);
+      drawWordTiles();
+      updateAnswerReady();
+    }));
+  });
+
+  wordTiles.filter(tile => !chosenTileIds.includes(tile.id)).forEach(tile => {
+    bank.appendChild(makeWordButton(tile, () => {
+      chosenTileIds.push(tile.id);
+      drawWordTiles();
+      updateAnswerReady();
+    }));
+  });
 }
-$("answerButton").addEventListener("click",()=>{
-  if(answered){if(index<questions.length-1){index++;renderQuestion()}else finish();return}
-  const q=questions[index],ok=check(q);answered=true;
-  $("answers").querySelectorAll("button,input").forEach(x=>x.disabled=true);
-  if(ok){score++;$("score").textContent=score;$("feedback").textContent=say("correct")+(loc(q.explanation)||"");$("feedback").className="feedback good"}
-  else{$("feedback").textContent=say("wrong")+(loc(q.explanation)||"");$("feedback").className="feedback bad"}
-  markCorrect(q);
-  if(!q.image) reaction(ok);
-  $("fill").style.width=Math.round((index+1)/questions.length*100)+"%";
-  $("percent").textContent=Math.round((index+1)/questions.length*100)+"%";
-  $("answerButton").textContent=index<questions.length-1?say("next"):say("result");
-  $("answerButton").disabled=false;
+
+function makeWordButton(tile, onClick) {
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = "word";
+  button.textContent = tile.text;
+  button.addEventListener("click", onClick);
+  return button;
+}
+
+function updateAnswerReady() {
+  if (!game[gameIndex]) return;
+
+  const question = game[gameIndex];
+  const type = question.type || "single";
+  let ready = false;
+
+  if (type === "single" || type === "boolean") ready = selected !== null;
+  if (type === "multiple") ready = selectedMany.size > 0;
+  if (type === "text") ready = Boolean($("typedAnswer")?.value.trim());
+  if (type === "word_order") {
+    ready = chosenTileIds.length === question.correctWords.length;
+  }
+
+  $("answerButton").disabled = !ready;
+}
+
+function normalizeAnswer(value) {
+  return String(value ?? "")
+    .trim()
+    .toLocaleLowerCase("pl")
+    .replace(/[.!?,;:]+$/g, "")
+    .replace(/\s+/g, " ");
+}
+
+function isCorrect(question) {
+  const type = question.type || "single";
+
+  if (type === "single") return selected === question.correct;
+  if (type === "boolean") return selected === question.correctBoolean;
+
+  if (type === "text") {
+    const entered = normalizeAnswer($("typedAnswer").value);
+    return question.acceptedAnswers.some(answer =>
+      normalizeAnswer(answer) === entered
+    );
+  }
+
+  if (type === "word_order") {
+    const response = chosenTileIds.map(id =>
+      wordTiles.find(tile => tile.id === id)?.text
+    );
+    return JSON.stringify(response) === JSON.stringify(question.correctWords);
+  }
+
+  if (type === "multiple") {
+    const response = [...selectedMany].sort((a, b) => a - b);
+    const correct = [...question.correctAnswers].sort((a, b) => a - b);
+    return JSON.stringify(response) === JSON.stringify(correct);
+  }
+
+  return false;
+}
+
+$("answerButton").addEventListener("click", () => {
+  if (!answered) {
+    checkAnswer();
+  } else if (gameIndex < game.length - 1) {
+    gameIndex++;
+    renderQuestion();
+  } else {
+    finishGame();
+  }
 });
-function markCorrect(q) {
-  const type=q.type||"single";
-  if(type==="single")$("answers").children[q.correct]?.classList.add("correct");
-  if(type==="boolean")$("answers").children[q.correctBoolean?0:1]?.classList.add("correct");
-  if(type==="multiple")q.correctAnswers.forEach(i=>$("answers").children[i]?.classList.add("correct"));
+
+function checkAnswer() {
+  const question = game[gameIndex];
+  const correct = isCorrect(question);
+  answered = true;
+
+  $("answers").querySelectorAll("button").forEach(button => {
+    button.disabled = true;
+  });
+
+  if (correct) {
+    score++;
+    $("score").textContent = String(score);
+    $("feedback").textContent =
+      `Dobrze! ${question.explanation || "Świetna odpowiedź."}`;
+    $("feedback").className = "feedback good";
+  } else {
+    $("feedback").textContent =
+      `Tym razem niepoprawnie. ${question.explanation || "Spróbuj zapamiętać tę wskazówkę."}`;
+    $("feedback").className = "feedback bad";
+  }
+
+  markCorrectAnswers(question);
+  if (!question.image) showReaction(correct);
+
+  $("fill").style.width = `${Math.round((gameIndex + 1) / game.length * 100)}%`;
+  $("percent").textContent = `${Math.round((gameIndex + 1) / game.length * 100)}%`;
+  $("answerButton").textContent =
+    gameIndex < game.length - 1 ? "Następne pytanie" : "Zobacz wynik";
+  $("answerButton").disabled = false;
 }
-function showQuestionImage(q) {
-  if(!q.image){$("visual").innerHTML=`<div class="muted">${say("noImage")}</div>`;return}
-  const img=document.createElement("img");img.src=q.image;img.alt=loc(q.imageAlt)||loc(q.topic);
-  img.onerror=()=>{$("visual").textContent=say("missingImage")};$("visual").replaceChildren(img);
-  $("visualTitle").textContent=say("image");$("visualCaption").textContent=loc(q.imageAlt)||loc(q.topic);
+
+function markCorrectAnswers(question) {
+  const type = question.type || "single";
+
+  if (type === "single") {
+    $("answers").children[question.correct]?.classList.add("correct");
+  } else if (type === "boolean") {
+    $("answers").children[question.correctBoolean ? 0 : 1]?.classList.add("correct");
+  } else if (type === "multiple") {
+    question.correctAnswers.forEach(index =>
+      $("answers").children[index]?.classList.add("correct")
+    );
+  }
 }
-function reaction(ok) {
-  const items=ok?[["🏅","🏅","🌟","🎉","🦊","👑","🚀"],["Great job!","Great job!","Brilliant!","Well done!","Clever!","Knowledge champion!","Keep going!"]]:
-    [["😟","😢","🙁","🫤","😕"],["Try again!","Oh no!","Almost!","Keep learning!","Every mistake teaches us!"]];
-  const i=Math.floor(Math.random()*items[0].length);
-  $("visual").innerHTML=`<div class="reaction"><div class="emoji">${items[0][i]}</div><div class="badge">${items[1][i]}</div></div>`;
-  $("visualTitle").textContent=ok?say("earned"):say("tryAgain");
-  $("visualCaption").textContent=ok?say("correctMsg"):say("wrongMsg");
+
+function showReaction(correct) {
+  const options = correct ? goodReactions : wrongReactions;
+  const [emoji, message] = options[Math.floor(Math.random() * options.length)];
+
+  $("visual").innerHTML =
+    `<div class="reaction"><div class="emoji">${emoji}</div>` +
+    `<div class="badge">${esc(message)}</div></div>`;
+
+  $("visualTitle").textContent = correct ? "Odznaka zdobyta!" : "Następnym razem będzie lepiej";
+  $("visualCaption").textContent = correct
+    ? "Dobra odpowiedź — zdobywasz punkt."
+    : "Pomyłki są częścią nauki. Przeczytaj wyjaśnienie i próbuj dalej.";
 }
-function finish() {
-  $("play").classList.add("hidden");$("result").classList.remove("hidden");
-  const pct=Math.round(score/questions.length*100);
-  $("resultEmoji").textContent=pct>=80?"🏆":pct>=50?"🌟":"💪";
-  $("resultTitle").textContent=pct>=80?say("excellent"):pct>=50?say("good"):say("practice");
-  $("resultText").textContent=`${say("finished")} ${score} / ${questions.length} (${pct}%).`;
+
+function finishGame() {
+  $("play").classList.add("hidden");
+  $("result").classList.remove("hidden");
+
+  const percent = Math.round(score / game.length * 100);
+  $("resultEmoji").textContent = percent >= 80 ? "🏆" : percent >= 50 ? "🌟" : "💪";
+  $("resultTitle").textContent =
+    percent >= 80 ? "Fantastyczny wynik!" :
+    percent >= 50 ? "Dobra robota!" : "Trening czyni mistrza!";
+  $("resultText").textContent =
+    `Poprawne odpowiedzi: ${score} z ${game.length} (${percent}%).`;
 }
-$("again").addEventListener("click",()=>{$("result").classList.add("hidden");$("setup").classList.remove("hidden");showStartVisual()});
-function escapeHtml(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+
+$("again").addEventListener("click", () => {
+  $("result").classList.add("hidden");
+  $("setup").classList.remove("hidden");
+  showStartVisual();
+});
+
+/* Panel nauczyciela */
+function buildOptionEditor(answers = [], correctIndexes = [], multiple = false) {
+  $("optionsEditor").innerHTML = "";
+
+  for (let index = 0; index < 4; index++) {
+    const row = document.createElement("div");
+    row.className = "option-row";
+
+    const input = document.createElement("input");
+    input.placeholder = `Odpowiedź ${String.fromCharCode(65 + index)}`;
+    input.value = answers[index] || "";
+    input.dataset.option = String(index);
+
+    const label = document.createElement("label");
+    label.className = "correct-pick";
+
+    const marker = document.createElement("input");
+    marker.type = multiple ? "checkbox" : "radio";
+    marker.name = "correctOption";
+    marker.value = String(index);
+    marker.checked = correctIndexes.includes(index);
+
+    label.append(marker, document.createTextNode(" poprawna"));
+    row.append(input, label);
+    $("optionsEditor").appendChild(row);
+  }
+
+  $("choiceHelp").textContent = multiple
+    ? "Zaznacz wszystkie poprawne odpowiedzi."
+    : "Zaznacz jedną poprawną odpowiedź.";
+}
+
+function updateTypeFields(question = {}) {
+  const type = $("fType").value;
+
+  $("choiceFields").classList.toggle("hidden", !["single", "multiple"].includes(type));
+  $("booleanFields").classList.toggle("hidden", type !== "boolean");
+  $("textFields").classList.toggle("hidden", type !== "text");
+  $("wordFields").classList.toggle("hidden", type !== "word_order");
+
+  const correctIndexes = question.correctAnswers ||
+    (Number.isInteger(question.correct) ? [question.correct] : []);
+
+  buildOptionEditor(question.answers || [], correctIndexes, type === "multiple");
+
+  if (typeof question.correctBoolean === "boolean") {
+    $("fBoolean").value = String(question.correctBoolean);
+  }
+  $("fAccepted").value = (question.acceptedAnswers || []).join("\n");
+  $("fWords").value = (question.words || []).join("\n");
+  $("fSentence").value = (question.correctWords || []).join(" ");
+}
+
+$("fType").addEventListener("change", () => updateTypeFields());
+
+function getCheckedCorrectIndexes() {
+  return [...$("optionsEditor").querySelectorAll('input[type="checkbox"], input[type="radio"]')]
+    .filter(input => input.checked)
+    .map(input => Number(input.value));
+}
+
+$("questionForm").addEventListener("submit", event => {
+  event.preventDefault();
+
+  const type = $("fType").value;
+  const question = {
+    id: editingId || `q-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+    type,
+    grade: $("fGrade").value,
+    subject: $("fSubject").value.trim(),
+    topic: $("fTopic").value.trim(),
+    difficulty: $("fDifficulty").value,
+    question: $("fQuestion").value.trim(),
+    explanation: $("fExplanation").value.trim(),
+    image: $("fImage").value.trim(),
+    imageAlt: $("fImageAlt").value.trim()
+  };
+
+  if (type === "single" || type === "multiple") {
+    question.answers = [...$("optionsEditor").querySelectorAll("input[data-option]")]
+      .map(input => input.value.trim());
+
+    if (question.answers.some(answer => !answer)) {
+      alert("Wpisz wszystkie cztery odpowiedzi.");
+      return;
+    }
+
+    const indexes = getCheckedCorrectIndexes();
+    if (!indexes.length || (type === "single" && indexes.length !== 1)) {
+      alert(type === "single"
+        ? "Zaznacz jedną poprawną odpowiedź."
+        : "Zaznacz przynajmniej jedną poprawną odpowiedź.");
+      return;
+    }
+
+    if (type === "single") question.correct = indexes[0];
+    else question.correctAnswers = indexes;
+  }
+
+  if (type === "boolean") {
+    question.correctBoolean = $("fBoolean").value === "true";
+  }
+
+  if (type === "text") {
+    question.acceptedAnswers = $("fAccepted").value
+      .split("\n").map(answer => answer.trim()).filter(Boolean);
+    if (!question.acceptedAnswers.length) {
+      alert("Wpisz przynajmniej jedną akceptowaną odpowiedź.");
+      return;
+    }
+  }
+
+  if (type === "word_order") {
+    question.words = $("fWords").value
+      .split("\n").map(word => word.trim()).filter(Boolean);
+    question.correctWords = $("fSentence").value
+      .trim().split(/\s+/).filter(Boolean);
+
+    if (question.words.length < 2 || !question.correctWords.length) {
+      alert("Dodaj przynajmniej dwa słowa i poprawne zdanie.");
+      return;
+    }
+  }
+
+  if (editingId) {
+    const index = data.questions.findIndex(item => item.id === editingId);
+    if (index !== -1) data.questions[index] = question;
+  } else {
+    data.questions.push(question);
+  }
+
+  resetForm();
+  renderAdmin();
+  refreshStudentFilters();
+});
+
+function resetForm() {
+  editingId = null;
+  $("questionForm").reset();
+  $("editId").value = "";
+  $("formTitle").textContent = "Dodaj pytanie";
+  $("saveQuestion").textContent = "Dodaj pytanie";
+  $("cancelEdit").classList.add("hidden");
+  updateTypeFields();
+}
+
+$("cancelEdit").addEventListener("click", resetForm);
+
+function editQuestion(id) {
+  const question = data.questions.find(item => item.id === id);
+  if (!question) return;
+
+  editingId = id;
+  $("editId").value = id;
+  $("formTitle").textContent = "Edytuj pytanie";
+  $("saveQuestion").textContent = "Zapisz zmiany";
+  $("cancelEdit").classList.remove("hidden");
+
+  $("fGrade").value = question.grade;
+  $("fSubject").value = question.subject;
+  $("fTopic").value = question.topic;
+  $("fDifficulty").value = question.difficulty;
+  $("fType").value = question.type || "single";
+  $("fQuestion").value = question.question;
+  $("fExplanation").value = question.explanation || "";
+  $("fImage").value = question.image || "";
+  $("fImageAlt").value = question.imageAlt || "";
+
+  updateTypeFields(question);
+  $("formTitle").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function deleteQuestion(id) {
+  const question = data.questions.find(item => item.id === id);
+  if (!question || !confirm("Usunąć to pytanie?")) return;
+
+  data.questions = data.questions.filter(item => item.id !== id);
+  renderAdmin();
+  refreshStudentFilters();
+}
+
+function moveQuestion(id, direction) {
+  const index = data.questions.findIndex(item => item.id === id);
+  if (index < 0) return;
+
+  const current = data.questions[index];
+  const group = data.questions
+    .map((question, originalIndex) => ({ question, originalIndex }))
+    .filter(item =>
+      item.question.grade === current.grade &&
+      item.question.subject === current.subject &&
+      item.question.topic === current.topic &&
+      item.question.difficulty === current.difficulty
+    );
+
+  const position = group.findIndex(item => item.question.id === id);
+  const target = group[position + direction];
+  if (!target) return;
+
+  [data.questions[index], data.questions[target.originalIndex]] =
+    [data.questions[target.originalIndex], data.questions[index]];
+
+  renderAdmin();
+}
+
+$("filterSubject").addEventListener("change", renderQuestionList);
+$("filterGrade").addEventListener("change", renderQuestionList);
+
+function renderAdmin() {
+  $("teacherDifficulty").value = data.settings.difficulty;
+
+  const oldSubject = $("filterSubject").value;
+  const subjects = [...new Set(data.questions.map(question => question.subject))]
+    .sort((a, b) => a.localeCompare(b, "pl"));
+
+  $("filterSubject").innerHTML =
+    `<option value="">Wszystkie</option>` +
+    subjects.map(subject => `<option value="${esc(subject)}">${esc(subject)}</option>`).join("");
+
+  if (subjects.includes(oldSubject)) $("filterSubject").value = oldSubject;
+
+  renderQuestionList();
+}
+
+function renderQuestionList() {
+  const subject = $("filterSubject").value;
+  const grade = $("filterGrade").value;
+
+  const questions = data.questions.filter(question =>
+    (!subject || question.subject === subject) &&
+    (!grade || question.grade === grade)
+  );
+
+  if (!questions.length) {
+    $("questionList").innerHTML = `<p class="help">Brak pytań dla tego filtra.</p>`;
+    return;
+  }
+
+  $("questionList").innerHTML = questions.map(question => `
+    <article class="item">
+      <div class="badges">
+        <span class="badge-chip">${esc(question.grade)}</span>
+        <span class="badge-chip">${esc(question.subject)}</span>
+        <span class="badge-chip">${esc(question.topic)}</span>
+        <span class="badge-chip">${esc(question.difficulty)}</span>
+        <span class="badge-chip">${esc(typeLabel(question.type || "single"))}</span>
+        ${question.image ? `<span class="badge-chip">ma ilustrację</span>` : ""}
+      </div>
+      <p><strong>${esc(question.question)}</strong></p>
+      <div class="item-actions">
+        <button class="small" data-action="up" data-id="${esc(question.id)}">↑ Góra</button>
+        <button class="small" data-action="down" data-id="${esc(question.id)}">↓ Dół</button>
+        <button class="small" data-action="edit" data-id="${esc(question.id)}">Edytuj</button>
+        <button class="danger" data-action="delete" data-id="${esc(question.id)}">Usuń</button>
+      </div>
+    </article>
+  `).join("");
+
+  $("questionList").querySelectorAll("[data-action]").forEach(button => {
+    button.addEventListener("click", () => {
+      const id = button.dataset.id;
+      const action = button.dataset.action;
+
+      if (action === "edit") editQuestion(id);
+      if (action === "delete") deleteQuestion(id);
+      if (action === "up") moveQuestion(id, -1);
+      if (action === "down") moveQuestion(id, 1);
+    });
+  });
+}
+
+/* Eksport obejmuje aktualne pytania oraz trudność nauczyciela. */
+$("exportButton").addEventListener("click", async () => {
+  const json = JSON.stringify({
+    settings: data.settings,
+    questions: data.questions
+  }, null, 2);
+
+  $("exportText").value = json;
+  $("exportText").classList.remove("hidden");
+
+  try {
+    await navigator.clipboard.writeText(json);
+    $("exportStatus").textContent =
+      "Skopiowano JSON. Wklej go do questions.json na GitHubie i zatwierdź zmianę.";
+  } catch (_) {
+    $("exportText").focus();
+    $("exportText").select();
+    $("exportStatus").textContent =
+      "Zaznaczony JSON jest gotowy do skopiowania. Wklej go do questions.json na GitHubie.";
+  }
+});
+
+updateTypeFields();
 loadData();
 </script>
 </body>
